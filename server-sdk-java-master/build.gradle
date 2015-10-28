@@ -1,0 +1,7 @@
+apply plugin: 'java'
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile files('libs/commons-codec-1.4.jar')
+    compile files('libs/gson-2.2.4.jar')
+}

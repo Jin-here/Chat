@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="@dimen/content_padding"
+    android:padding="@dimen/content_padding"
+    android:background="@drawable/content_frame"
+    android:gravity="center">
+
+    <FrameLayout
+        android:id="@+id/warn_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <EditText
+            android:id="@+id/et_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/content_padding"
+            android:background="@drawable/content_frame"
+            android:hint="请输入对方名称"
+            android:layout_alignParentLeft="true"
+            android:textSize="@dimen/register_content_size"
+            android:layout_alignTop="@+id/btn_private"
+            android:layout_alignBottom="@+id/btn_private"/>
+
+        <Button
+            android:id="@+id/btn_private"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="开启单聊"
+            android:padding="@dimen/content_padding"
+            android:textSize="@dimen/register_content_size"
+            android:textColor="@color/content_color"
+            android:background="@drawable/content_frame"
+            android:layout_toRightOf="@id/et_name"
+            android:layout_marginLeft="@dimen/content_padding"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_conversationList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="会话列表"
+        android:textSize="@dimen/register_content_size"
+        android:textColor="@color/content_color"
+        android:padding="@dimen/content_padding"
+        android:background="@drawable/content_frame"
+        android:layout_marginTop="@dimen/content_padding"/>
+
+</LinearLayout>

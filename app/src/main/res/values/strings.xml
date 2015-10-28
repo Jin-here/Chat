@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">RongYunDemo</string>
+
+    <string name="username_blank">用户名不能为空</string>
+    <string name="password_blank">密码不能为空</string>
+    <string name="username_dont_exist">用户名不存在，请先注册</string>
+    <string name="password_incorrect">密码不正确</string>
+    <string name="username_exist">用户名已存在</string>
+    <string name="register_succeed">注册成功</string>
+</resources>
