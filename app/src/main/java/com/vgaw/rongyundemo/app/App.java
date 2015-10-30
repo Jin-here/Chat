@@ -5,6 +5,9 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+
+import com.baidu.mapapi.SDKInitializer;
+
 import io.rong.imkit.RongIM;
 
 /**
@@ -21,6 +24,13 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        /**
+         * 注意：在百度SDK各功能组件使用之前都需要调用
+         * SDKInitializer.initialize(getApplicationContext());
+         * 因此我们建议该方法放在Application的初始化方法中
+         */
+        SDKInitializer.initialize(this);
+
         /**
          * OnCreate 会被多个进程重入，这段保护代码，确保只有您需要使用 RongIM 的进程和 Push 进程执行了 init。
          * io.rong.push 为融云 push 进程名称，不可修改。
