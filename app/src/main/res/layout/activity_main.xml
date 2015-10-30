@@ -56,4 +56,15 @@
         android:background="@drawable/content_frame"
         android:layout_marginTop="@dimen/content_padding"/>
 
+    <Button
+        android:id="@+id/btn_chatroom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="聊天室"
+        android:textSize="@dimen/register_content_size"
+        android:textColor="@color/content_color"
+        android:padding="@dimen/content_padding"
+        android:background="@drawable/content_frame"
+        android:layout_marginTop="@dimen/content_padding"/>
+
 </LinearLayout>

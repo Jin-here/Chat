@@ -11,6 +11,7 @@ import com.vgaw.rongyundemo.protopojo.FlyCatProto;
 import com.vgaw.rongyundemo.util.WarnFragmentHelper;
 
 import io.rong.imkit.RongIM;
+import io.rong.imlib.model.Conversation;
 
 /**
  * Created by caojin on 15-10-21.
@@ -29,6 +30,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         btn_private.setOnClickListener(this);
         btn_conversationList.setOnClickListener(this);
 
+        Button btn_chatroom = (Button) findViewById(R.id.btn_chatroom);
+        btn_chatroom.setOnClickListener(this);
+
     }
 
     @Override
@@ -44,6 +48,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 //启动会话列表界面
                 if (RongIM.getInstance() != null)
                     RongIM.getInstance().startConversationList(this);
+                break;
+            case R.id.btn_chatroom:
+                /**
+                 * 启动聊天室聊天界面。
+                 *
+                 * @param context          应用上下文。
+                 * @param conversationType 开启会话类型。
+                 * @param targetId         聊天室 Id。
+                 * @param title            聊天的标题，如果传入空值，则默认显示会话的名称。
+                 */
+                RongIM.getInstance().startConversation(MainActivity.this, Conversation.ConversationType.CHATROOM, "9527", "标题");
                 break;
         }
     }

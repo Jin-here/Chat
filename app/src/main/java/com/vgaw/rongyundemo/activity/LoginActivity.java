@@ -183,6 +183,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     return R.string.password_incorrect;
                 }
             }else{
+
                 FlyCatProto.FlyCat response = request.requestForResult(FlyCatProto.FlyCat.newBuilder()
                         .setFlag(4)
                         .addStringV(username)
