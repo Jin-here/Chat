@@ -26,6 +26,11 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    //定位包、导航包需要的额外权限（注：基础权限也需要）
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
     <application
         android:name=".app.App"
         android:allowBackup="true"
@@ -84,6 +89,12 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activity.ShowLocActivity"/>
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="80bc35618f4866b583235439c0efb23b"/>
+
+        <service android:name="com.amap.api.location.APSService"></service>
     </application>
 
 </manifest>

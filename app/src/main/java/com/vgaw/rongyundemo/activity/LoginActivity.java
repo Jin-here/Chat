@@ -11,6 +11,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.vgaw.rongyundemo.DataFactory;
 import com.vgaw.rongyundemo.R;
 import com.vgaw.rongyundemo.app.App;
 import com.vgaw.rongyundemo.fragment.WarnFragment;
@@ -198,6 +199,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 }
 
                 app.getSp().edit().putString(App.TOKEN, token).commit();
+                DataFactory.getInstance().setUsername(username);
                 app.getSp().edit().putString(App.USER_NAME, username).commit();
                 app.getSp().edit().putString(App.PASSWORD, password).commit();
                 return -1;
