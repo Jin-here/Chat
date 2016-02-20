@@ -3,10 +3,11 @@ package com.vgaw.rongyundemo.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.vgaw.rongyundemo.R;
-import com.vgaw.rongyundemo.fragment.TitleFragment;
 
 import java.util.Locale;
 
@@ -38,6 +39,15 @@ public class ConversationActivity extends BaseActivity {
         setContentView(R.layout.conversation);
         Intent intent = getIntent();
 
+        ((TextView)findViewById(R.id.tv_title)).setText(intent.getData().getQueryParameter("title"));
+        RelativeLayout rl_back = (RelativeLayout) findViewById(R.id.rl_back);
+        rl_back.setVisibility(View.VISIBLE);
+        rl_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         getIntentDate(intent);
     }
 
@@ -50,11 +60,6 @@ public class ConversationActivity extends BaseActivity {
         mTargetIds = intent.getData().getQueryParameter("targetIds");
         //intent.getData().getLastPathSegment();//获得当前会话类型
         mConversationType = Conversation.ConversationType.valueOf(intent.getData().getLastPathSegment().toUpperCase(Locale.getDefault()));
-
-        // show title fragment.
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.title_fragment, TitleFragment.newInstance(intent.getData().getQueryParameter("title")), TitleFragment.TAG);
-        transaction.commit();
 
         enterFragment(mConversationType, mTargetId);
     }

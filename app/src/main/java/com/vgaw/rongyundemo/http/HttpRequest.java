@@ -12,9 +12,9 @@ import java.net.URL;
  * Created by Administrator on 2015/10/25.
  */
 public class HttpRequest {
-    public void request(FlyCatProto.FlyCat flyCat) {
-        String uri = "http://192.168.64.171:7778/";
+    private String uri = "http://192.168.1.102:7778/";
 
+    public void request(FlyCatProto.FlyCat flyCat) {
         URL url = null;
         try {
             url = new URL(uri);
@@ -47,9 +47,7 @@ public class HttpRequest {
     }
 
     public FlyCatProto.FlyCat   requestForResult(FlyCatProto.FlyCat flyCat) {
-        String uri = "http://192.168.64.171:7778/";
-
-        URL url;
+        URL url = null;
         try {
             url = new URL(uri);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
