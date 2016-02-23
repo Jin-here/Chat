@@ -34,6 +34,9 @@ import com.vgaw.rongyundemo.activity.ShowLocActivity;
 
 import java.util.ArrayList;
 
+import io.rong.imkit.RongIM;
+import io.rong.imlib.model.Conversation;
+
 /**
  * Created by caojin on 2016/2/20.
  */
@@ -69,10 +72,12 @@ public class MapShowFragment extends Fragment {
         ((Button) view.findViewById(R.id.btn_match)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progDialog.show();
+                /*progDialog.show();
                 //启动定位
                 mLocationClient.startLocation();
-                handler.postDelayed(delayRun, 5000);
+                handler.postDelayed(delayRun, 5000);*/
+                //RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, "9527", "聊天室");
+                startActivity(new Intent(getActivity(), ShowLocActivity.class));
             }
         });
 

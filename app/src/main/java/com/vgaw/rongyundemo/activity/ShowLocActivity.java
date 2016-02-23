@@ -32,9 +32,9 @@ public class ShowLocActivity extends Activity {
 
         if (mAMap == null) {
             mAMap = mMapView.getMap();
-            mAMap.getUiSettings().setMyLocationButtonEnabled(true);
+            /*mAMap.getUiSettings().setMyLocationButtonEnabled(true);
             mAMap.getUiSettings().setScaleControlsEnabled(true);
-            mAMap.getUiSettings().setCompassEnabled(true);
+            mAMap.getUiSettings().setCompassEnabled(true);*/
 
             updateMarkers();
             mAMap.setOnMarkerClickListener(onMarkerClickListener);
@@ -49,7 +49,7 @@ public class ShowLocActivity extends Activity {
     }
 
     private void updateMarkers(){
-        ArrayList<NearbyInfo> nearbyInfoList = DataFactory.getInstance().getNearbyInfoList();
+        /*ArrayList<NearbyInfo> nearbyInfoList = DataFactory.getInstance().getNearbyInfoList();
         if (nearbyInfoList == null){
             return;
         }
@@ -70,7 +70,7 @@ public class ShowLocActivity extends Activity {
                             .defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         }
 
-        mAMap.addMarkers(markerOptionsList, true);
+        mAMap.addMarkers(markerOptionsList, true);*/
     }
 
     AMap.OnMarkerClickListener onMarkerClickListener = new AMap.OnMarkerClickListener() {
