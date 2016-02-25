@@ -11,6 +11,10 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.services.nearby.NearbySearch;
+import com.vgaw.rongyundemo.DataFactory;
 import com.vgaw.rongyundemo.R;
 import com.vgaw.rongyundemo.fragment.ConversationListDynamicFragment;
 import com.vgaw.rongyundemo.fragment.MapShowFragment;
@@ -26,6 +30,7 @@ import io.rong.imlib.model.Conversation;
  */
 public class MainActivity extends BaseActivity implements View.OnClickListener{
 
+    public AMapLocationClient mLocationClient = null;
     private String[] iconContextList = new String[]{"首页", "会话", "我"};
     private int[] iconOrangeList = new int[]{R.drawable.home_orange, R.drawable.talklist_orange, R.drawable.me_orange};
     private int[] iconGrayList = new int[]{R.drawable.home_gray, R.drawable.talklist_gray, R.drawable.me_gray};
@@ -34,6 +39,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initialAmap();
         final FragmentTabHost mTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 
@@ -156,5 +162,46 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         }
     }
 
+    private void initialAmap(){
+        //初始化定位
+        mLocationClient = new AMapLocationClient(getApplicationContext());
+        //初始化定位参数
+        AMapLocationClientOption mLocationOption = new AMapLocationClientOption();
+        //设置定位模式为高精度模式，Battery_Saving为低功耗模式，Device_Sensors是仅设备模式
+        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+        //设置是否返回地址信息（默认返回地址信息）
+        mLocationOption.setNeedAddress(true);
+        //设置是否只定位一次,默认为false
+        mLocationOption.setOnceLocation(true);
+        //设置是否强制刷新WIFI，默认为强制刷新
+        mLocationOption.setWifiActiveScan(true);
+        //设置是否允许模拟位置,默认为false，不允许模拟位置
+        mLocationOption.setMockEnable(false);
+        //设置定位间隔,单位毫秒,默认为2000ms
+        mLocationOption.setInterval(2000);
+        //给定位客户端对象设置定位参数
+        mLocationClient.setLocationOption(mLocationOption);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopAMap();
+    }
+
+    private void stopAMap() {
+        //销毁定位客户端：
+        //销毁定位客户端之后，若要重新开启定位请重新New一个AMapLocationClient对象。
+        mLocationClient.onDestroy();
+
+        //用户信息清除后，将不会再被检索到，比如接单的美甲师下班后可以清除其位置信息。
+        //获取附近实例，并设置要清楚用户的id
+        NearbySearch.getInstance(getApplicationContext()).setUserID(DataFactory.getInstance().getUsername());
+        //调用异步清除用户接口
+        NearbySearch.getInstance(getApplicationContext())
+                .clearUserInfoAsyn();
+        //在停止使用附近派单功能时，需释放资源。
+        //调用销毁功能，在应用的合适生命周期需要销毁附近功能
+        NearbySearch.destroy();
+    }
 }

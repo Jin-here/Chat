@@ -30,3 +30,5 @@ proguard/
 .navigation/
 
 # Created by .ignore support plugin (hsz.mobi)
+
+app/build.gradle

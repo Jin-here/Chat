@@ -12,6 +12,7 @@ import java.net.URL;
  * Created by Administrator on 2015/10/25.
  */
 public class HttpRequest {
+    //private String uri = "http://192.168.1.102:7778/";
     private String uri = "http://192.168.1.107:7778/";
 
     public void request(FlyCatProto.FlyCat flyCat) {

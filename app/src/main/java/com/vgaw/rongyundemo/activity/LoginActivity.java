@@ -161,6 +161,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             if (aInteger != -1){
                 new WarnFragmentHelper(manager, R.id.warn_fragment, getString(aInteger)).warn();
             }else{
+                DataFactory.getInstance().setUsername(username);
                 connect(app.getSp().getString(App.TOKEN, null));
                 return;
             }
@@ -199,7 +200,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 }
 
                 app.getSp().edit().putString(App.TOKEN, token).commit();
-                DataFactory.getInstance().setUsername(username);
                 app.getSp().edit().putString(App.USER_NAME, username).commit();
                 app.getSp().edit().putString(App.PASSWORD, password).commit();
                 return -1;
