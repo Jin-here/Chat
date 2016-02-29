@@ -4,17 +4,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.services.nearby.NearbySearch;
-import com.vgaw.rongyundemo.DataFactory;
+import com.vgaw.rongyundemo.fragment.FriendFragment;
+import com.vgaw.rongyundemo.util.DataFactory;
 import com.vgaw.rongyundemo.R;
 import com.vgaw.rongyundemo.fragment.ConversationListDynamicFragment;
 import com.vgaw.rongyundemo.fragment.MapShowFragment;
@@ -23,7 +21,6 @@ import com.vgaw.rongyundemo.protopojo.FlyCatProto;
 import com.vgaw.rongyundemo.util.WarnFragmentHelper;
 
 import io.rong.imkit.RongIM;
-import io.rong.imlib.model.Conversation;
 
 /**
  * Created by caojin on 15-10-21.
@@ -31,7 +28,7 @@ import io.rong.imlib.model.Conversation;
 public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     public AMapLocationClient mLocationClient = null;
-    private String[] iconContextList = new String[]{"首页", "会话", "我"};
+    private String[] iconContextList = new String[]{"会话", "好友", "我"};
     private int[] iconOrangeList = new int[]{R.drawable.home_orange, R.drawable.talklist_orange, R.drawable.me_orange};
     private int[] iconGrayList = new int[]{R.drawable.home_gray, R.drawable.talklist_gray, R.drawable.me_gray};
     @Override
@@ -43,14 +40,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         final FragmentTabHost mTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 
-        Bundle bundle = new Bundle();
-        bundle.putString("context", "fuck");
-        mTabHost.addTab(mTabHost.newTabSpec("simple").setIndicator(getTabItemView(0)),
+        Bundle meBundle = new Bundle();
+        meBundle.putBoolean("isMe", true);
+        meBundle.putString("name", DataFactory.getInstance().getUsername());
+        mTabHost.addTab(mTabHost.newTabSpec("talk").setIndicator(getTabItemView(0)),
                 MapShowFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec("contacts").setIndicator(getTabItemView(1)),
-                ConversationListDynamicFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec("custom").setIndicator(getTabItemView(2)),
-                MeFragment.class, null);
+        mTabHost.addTab(mTabHost.newTabSpec("friend").setIndicator(getTabItemView(1)),
+                FriendFragment.class, null);
+        mTabHost.addTab(mTabHost.newTabSpec("me").setIndicator(getTabItemView(2)),
+                MeFragment.class, meBundle);
 
         mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
@@ -130,38 +128,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     *
     * */
 
-    private class MyTask extends AsyncTask<Void, Void, Boolean>{
-        private String name;
-        private FlyCatProto.FlyCat response;
-
-        public MyTask(String name){
-            this.name = name;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            if (aBoolean){
-                /**
-                 * 启动单聊
-                 * context - 应用上下文。
-                 * targetUserId - 要与之聊天的用户 Id。
-                 * title - 聊天的标题，如果传入空值，则默认显示与之聊天的用户名称。
-                 */
-                //启动会话界面
-                if (RongIM.getInstance() != null)
-                    RongIM.getInstance().startPrivateChat(MainActivity.this, response.getStringV(1), response.getStringV(1));
-            }else{
-                new WarnFragmentHelper(manager, R.id.warn_fragment, getResources().getString(R.string.username_dont_exist)).warn();
-            }
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            response = request.requestForResult(FlyCatProto.FlyCat.newBuilder().setFlag(4).addStringV(name).build());
-            return response.getBoolV(0);
-        }
-    }
-
     private void initialAmap(){
         //初始化定位
         mLocationClient = new AMapLocationClient(getApplicationContext());
@@ -186,7 +152,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopAMap();
+        //stopAMap();
     }
 
     private void stopAMap() {

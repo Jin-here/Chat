@@ -9,11 +9,28 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.vgaw.rongyundemo.R;
+import com.vgaw.rongyundemo.util.DataFactory;
 
 /**
  * Created by caojin on 2016/2/20.
  */
 public class MeFragment extends Fragment{
+    private Bundle data = null;
+
+    public MeFragment(){}
+
+    public static MeFragment newInstance(Bundle data) {
+        MeFragment fragment = new MeFragment();
+        fragment.setArguments(data);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        data = getArguments();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -22,6 +39,9 @@ public class MeFragment extends Fragment{
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ((TextView)view.findViewById(R.id.tv_title)).setText("我");
+        if (data != null){
+            ((TextView)view.findViewById(R.id.tv_title)).setText(data.getBoolean("isMe") ? "我" : "TA");
+            ((TextView)view.findViewById(R.id.tv_name)).setText(data.getString("name"));
+        }
     }
 }

@@ -2,46 +2,34 @@ package com.vgaw.rongyundemo.fragment;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
-import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.amap.api.maps.AMap;
-import com.amap.api.maps.MapView;
-import com.amap.api.maps.SupportMapFragment;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.nearby.NearbyInfo;
 import com.amap.api.services.nearby.NearbySearch;
 import com.amap.api.services.nearby.NearbySearchFunctionType;
 import com.amap.api.services.nearby.NearbySearchResult;
 import com.amap.api.services.nearby.UploadInfo;
-import com.vgaw.rongyundemo.DataFactory;
+import com.vgaw.rongyundemo.message.MatchEngine;
 import com.vgaw.rongyundemo.R;
 import com.vgaw.rongyundemo.activity.MainActivity;
-import com.vgaw.rongyundemo.activity.ShowLocActivity;
+import com.vgaw.rongyundemo.util.DataFactory;
+import com.vgaw.rongyundemo.view.Loading;
+import com.vgaw.rongyundemo.view.MyToast;
 
 import java.util.ArrayList;
-
-import javax.security.auth.login.LoginException;
-
-import io.rong.imkit.RongIM;
-import io.rong.imlib.model.Conversation;
 
 /**
  * Created by caojin on 2016/2/20.
@@ -56,7 +44,7 @@ public class MapShowFragment extends Fragment {
     private Runnable delayRun = new Runnable() {
         @Override
         public void run() {
-            Toast.makeText(getActivity(), "你藏的太深啦，人家都找不到人了咧～", Toast.LENGTH_SHORT).show();
+            MyToast.makeText(getActivity(), "你藏的太深啦，人家都找不到人了咧～", MyToast.LENGTH_SHORT).show();
             progDialog.dismiss();
         }
     };
@@ -69,7 +57,7 @@ public class MapShowFragment extends Fragment {
     private LatLonPoint latLonPoint;
     //声明AMapLocationClient类对象
     public AMapLocationClient mLocationClient = null;
-    private EditText et;
+    private ToggleButton et;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -79,15 +67,23 @@ public class MapShowFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ((TextView) view.findViewById(R.id.tv_title)).setText("首页");
-        et = (EditText) view.findViewById(R.id.et);
+        et = (ToggleButton) view.findViewById(R.id.tb);
+        view.findViewById(R.id.btn_test).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyToast.makeText(getActivity(), "fuck").show();
+                Loading.getInstance(getActivity()).show();
+            }
+        });
         ((Button) view.findViewById(R.id.btn_match)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isPaused = false;
+                /*isPaused = false;
                 progDialog.show();
                 //启动定位
                 mLocationClient.startLocation();
-                handler.postDelayed(delayRun, TIME_OUT);
+                handler.postDelayed(delayRun, TIME_OUT);*/
+                MatchEngine.getInstance().sendResponse(et.isChecked() ? "caojin" : "chenkai", MatchEngine.INVITE);
             }
         });
 
@@ -118,10 +114,16 @@ public class MapShowFragment extends Fragment {
 
                     if (nearbyInfoList.size() > 1) {
                         DataFactory.getInstance().setNearbyInfoList(nearbyInfoList);
-                        Toast.makeText(getActivity(), nearbyInfoList.get(1).getUserID(), Toast.LENGTH_SHORT).show();
+                        MyToast.makeText(getActivity(), nearbyInfoList.get(1).getUserID()).show();
                         if (!isPaused) {
                             progDialog.dismiss();
-                            RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, "9527", "聊天室");
+                            //RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, "9527", "聊天室");
+                            for (NearbyInfo info : nearbyInfoList){
+                                if (info.getUserID().equals(DataFactory.getInstance().getUsername())){
+                                    continue;
+                                }
+                                MatchEngine.getInstance().sendResponse(info.getUserID(), MatchEngine.INVITE);
+                            }
                         }
                     } else {
                         if (!isPaused){
@@ -129,10 +131,10 @@ public class MapShowFragment extends Fragment {
                         }
                     }
                 } else {
-                    //Toast.makeText(getActivity(), "周边搜索结果为空", Toast.LENGTH_SHORT).show();
+                    //MyToast.makeText(getActivity(), "周边搜索结果为空", MyToast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(getActivity(), "周边搜索出现异常，异常码为：" + resultCode, Toast.LENGTH_SHORT).show();
+                MyToast.makeText(getActivity(), "周边搜索出现异常，异常码为：" + resultCode).show();
             }
         }
 
@@ -156,9 +158,9 @@ public class MapShowFragment extends Fragment {
                     uploadLocInfo();
                 } else {
                     //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
-                    Toast.makeText(getActivity(), "location Error, ErrCode:"
+                    MyToast.makeText(getActivity(), "location Error, ErrCode:"
                             + aMapLocation.getErrorCode() + ", errInfo:"
-                            + aMapLocation.getErrorInfo(), Toast.LENGTH_SHORT).show();
+                            + aMapLocation.getErrorInfo()).show();
                 }
             }
         }

@@ -1,4 +1,7 @@
-package com.vgaw.rongyundemo;
+package com.vgaw.rongyundemo.util;
+
+import android.content.Context;
+import android.view.WindowManager;
 
 import com.amap.api.services.nearby.NearbyInfo;
 
@@ -8,11 +11,22 @@ import java.util.ArrayList;
  * Created by caojin on 2016/2/17.
  */
 public class DataFactory {
+    private Context mContext;
+
+    private long id;
     private String username;
     private String pwd;
     private ArrayList<NearbyInfo> nearbyInfoList;
     private int lat;
     private int lng;
+
+    public void setId(long id){
+        this.id = id;
+    }
+
+    public long getId(){
+        return this.id;
+    }
 
     public int getLat() {
         return lat;
@@ -75,4 +89,7 @@ public class DataFactory {
         this.listener = listener;
     }
 
+    public void initial(Context mContext){
+        this.mContext = mContext;
+    }
 }

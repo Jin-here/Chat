@@ -3,7 +3,6 @@ package com.vgaw.rongyundemo.activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -11,17 +10,16 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.vgaw.rongyundemo.DataFactory;
+import com.vgaw.rongyundemo.message.MatchEngine;
+import com.vgaw.rongyundemo.http.HttpCat;
+import com.vgaw.rongyundemo.util.DataFactory;
 import com.vgaw.rongyundemo.R;
-import com.vgaw.rongyundemo.app.App;
-import com.vgaw.rongyundemo.fragment.WarnFragment;
+import com.vgaw.rongyundemo.App;
 import com.vgaw.rongyundemo.protopojo.FlyCatProto;
-import com.vgaw.rongyundemo.util.WarnFragmentHelper;
+import com.vgaw.rongyundemo.view.Loading;
+import com.vgaw.rongyundemo.view.MyToast;
 
 import org.json.JSONObject;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 import io.rong.ApiHttpClient;
 import io.rong.imkit.RongIM;
@@ -48,7 +46,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         btn_login.setOnClickListener(this);
         btn_register.setOnClickListener(this);
 
-
     }
 
     /**
@@ -59,7 +56,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private void connect(String token) {
 
         if (getApplicationInfo().packageName.equals(App.getCurProcessName(getApplicationContext()))) {
-
+            MatchEngine.getInstance().initial(LoginActivity.this);
             /**
              * IMKit SDK调用第二步,建立与服务器的连接
              */
@@ -70,8 +67,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                  */
                 @Override
                 public void onTokenIncorrect() {
-
+                    Loading.getInstance(LoginActivity.this).dismiss();
                     Log.d("LoginActivity", "--onTokenIncorrect");
+                    MyToast.makeText(LoginActivity.this, "哎呀，您吓到我了，请慢点来").show();
                 }
 
                 /**
@@ -81,6 +79,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 @Override
                 public void onSuccess(String userid) {
 
+                    Loading.getInstance(LoginActivity.this).dismiss();
                     Log.d("LoginActivity", "--onSuccess" + userid);
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     finish();
@@ -94,6 +93,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 public void onError(RongIMClient.ErrorCode errorCode) {
 
                     Log.d("LoginActivity", "--onError" + errorCode);
+                    Loading.getInstance(LoginActivity.this).dismiss();
+                    MyToast.makeText(LoginActivity.this, "哎呀，您吓到我了，请慢点来").show();
                 }
             });
         }
@@ -115,161 +116,108 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        String username = et_username.getText().toString();
-        String password = et_password.getText().toString();
+        final String username = et_username.getText().toString();
+        final String password = et_password.getText().toString();
 
         // shake between left and right to warn the user.
-        Animation shakeAnimation = AnimationUtils.loadAnimation(getBaseContext(), R.anim.shake);
+        final Animation shakeAnimation = AnimationUtils.loadAnimation(getBaseContext(), R.anim.shake);
 
         // if user do not input anything.
         if ("".equals(username)) {
-            new WarnFragmentHelper(manager, R.id.warn_fragment, getString(R.string.username_blank)).warn();
+            MyToast.makeText(LoginActivity.this, "用户名不能为空").show();
             et_username.startAnimation(shakeAnimation);
             return;
         }
 
         // if user do not input anything.
         if ("".equals(password)) {
-            new WarnFragmentHelper(manager, R.id.warn_fragment, getString(R.string.password_blank)).warn();
+            MyToast.makeText(LoginActivity.this, "密码不能为空").show();
             et_password.startAnimation(shakeAnimation);
             return;
         }
 
         switch (v.getId()) {
             case R.id.btn_login:
-                new MyLoginTask(username, password).execute();
+                HttpCat.fly(FlyCatProto.FlyCat.newBuilder().setFlag(5).addStringV(username).build(), new HttpCat.AbstractResponseListener(){
+                    @Override
+                    public void onPreExecute() {
+                        Loading.getInstance(LoginActivity.this).show();
+                    }
+
+                    @Override
+                    public void onSuccess(FlyCatProto.FlyCat flyCat) {
+                        if (flyCat.getFlag() == 1){
+                            HttpCat.fly(FlyCatProto.FlyCat.newBuilder().setFlag(2).addStringV(username).addStringV(password).build(), new HttpCat.AbstractResponseListener(){
+                                @Override
+                                public void onSuccess(FlyCatProto.FlyCat flyCat) {
+                                    if (flyCat.getFlag() == 1){
+                                        connect(flyCat.getStringV(0));
+                                        DataFactory.getInstance().setId(flyCat.getLongV(0));
+                                        DataFactory.getInstance().setUsername(username);
+                                        DataFactory.getInstance().setPwd(password);
+                                    }else {
+                                        // 密码错误
+                                        et_password.startAnimation(shakeAnimation);
+                                        et_password.setText("");
+                                        MyToast.makeText(LoginActivity.this, "唉，不小心手抖了").show();
+                                        Loading.getInstance(LoginActivity.this).dismiss();
+                                    }
+                                }
+                            });
+                        }else {
+                            // 用户不存在
+                            et_username.startAnimation(shakeAnimation);
+                            MyToast.makeText(LoginActivity.this, "该用户不存在，请注册喔").show();
+                            Loading.getInstance(LoginActivity.this).dismiss();
+                        }
+                    }
+                });
                 break;
             case R.id.btn_register:
-                new MyRegisterTask(username, password).execute();
+                HttpCat.fly(FlyCatProto.FlyCat.newBuilder().setFlag(5).addStringV(username).build(), new HttpCat.AbstractResponseListener(){
+                    @Override
+                    public void onPreExecute() {
+                        Loading.getInstance(LoginActivity.this).show();
+                    }
+
+                    @Override
+                    public void onSuccess(FlyCatProto.FlyCat flyCat) {
+                        if (flyCat.getFlag() == 0){
+                            new AsyncTask<String, Void, String>(){
+                                @Override
+                                protected String doInBackground(String... params) {
+                                    return requestForToken(params[0]);
+                                }
+
+                                @Override
+                                protected void onPostExecute(String s) {
+                                    if (s == null){
+                                        MyToast.makeText(LoginActivity.this, "哎呀，注册失败了，请稍后再试一次").show();
+                                    }else {
+                                        HttpCat.fly(FlyCatProto.FlyCat.newBuilder().setFlag(1).addStringV(s).addStringV(username).addStringV(password).build(), new HttpCat.AbstractResponseListener(){
+                                            @Override
+                                            public void onSuccess(FlyCatProto.FlyCat flyCat) {
+                                                if (flyCat.getFlag() == 1){
+                                                    MyToast.makeText(LoginActivity.this, "注册成功，欢迎加入！").show();
+                                                }else {
+                                                    MyToast.makeText(LoginActivity.this, "哎呀，注册失败了，请稍后再试一次").show();
+                                                }
+                                            }
+                                        });
+                                    }
+                                    Loading.getInstance(LoginActivity.this).dismiss();
+                                }
+                            }.execute(username);
+                        }else {
+                            // 用户存在
+                            et_username.startAnimation(shakeAnimation);
+                            et_username.setText("");
+                            MyToast.makeText(LoginActivity.this, "该用户已存在").show();
+                            Loading.getInstance(LoginActivity.this).dismiss();
+                        }
+                    }
+                });
                 break;
-        }
-    }
-
-    private class MyLoginTask extends AsyncTask<Void, Void, Integer>{
-        private String username;
-        private String password;
-
-        public MyLoginTask(String username, String password){
-            this.username = username;
-            this.password = password;
-        }
-
-        @Override
-        protected void onPostExecute(Integer aInteger) {
-            Animation shakeAnimation = AnimationUtils.loadAnimation(getBaseContext(), R.anim.shake);
-
-            if (aInteger != -1){
-                new WarnFragmentHelper(manager, R.id.warn_fragment, getString(aInteger)).warn();
-            }else{
-                DataFactory.getInstance().setUsername(username);
-                connect(app.getSp().getString(App.TOKEN, null));
-                return;
-            }
-            if (aInteger == R.string.password_incorrect){
-                et_username.startAnimation(shakeAnimation);
-                et_password.setText("");
-            }
-            if (aInteger == R.string.username_dont_exist){
-                et_username.startAnimation(shakeAnimation);
-                et_username.setText("");
-            }
-        }
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-            if (username.equals(app.getSp().getString(App.USER_NAME, null))){
-                if (password.equals(app.getSp().getString(App.PASSWORD, null))){
-                    return -1;
-                }else{
-                    // password incorrect.
-                    return R.string.password_incorrect;
-                }
-            }else{
-
-                FlyCatProto.FlyCat response = request.requestForResult(FlyCatProto.FlyCat.newBuilder()
-                        .setFlag(4)
-                        .addStringV(username)
-                        .build());
-                if (!response.getBoolV(0)){
-                    return R.string.username_dont_exist;
-                }
-                String token = response.getStringV(0);
-                String passwordCorrect = response.getStringV(2);
-                if (!password.equals(passwordCorrect)){
-                    return R.string.password_incorrect;
-                }
-
-                app.getSp().edit().putString(App.TOKEN, token).commit();
-                app.getSp().edit().putString(App.USER_NAME, username).commit();
-                app.getSp().edit().putString(App.PASSWORD, password).commit();
-                return -1;
-            }
-        }
-    }
-
-    private class MyRegisterTask extends AsyncTask<Void, Void, Boolean> {
-        private WarnFragment warnFragment;
-        private String username;
-        private String password;
-
-        public MyRegisterTask(String username, String password){
-            warnFragment = new WarnFragment();
-            this.username = username;
-            this.password = password;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            if (aBoolean){
-                // register succeed.
-                warnFragment.updateWarnInfo("注册成功");
-            }else{
-                // register failed.
-                warnFragment.updateWarnInfo("用户名已存在");
-                // shake between left and right to warn the user.
-                Animation shakeAnimation = AnimationUtils.loadAnimation(getBaseContext(), R.anim.shake);
-                et_username.startAnimation(shakeAnimation);
-                et_username.setText("");
-            }
-            // remove the warn fragment.
-            Timer timer = new Timer();
-            TimerTask timerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    FragmentTransaction fragmentTransaction1 = manager.beginTransaction();
-                    fragmentTransaction1.remove(warnFragment);
-                    fragmentTransaction1.commit();
-                }
-            };
-            timer.schedule(timerTask, 1000);
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            FlyCatProto.FlyCat response = request.requestForResult(FlyCatProto.FlyCat.newBuilder()
-                    .setFlag(4)
-                    .addStringV(username)
-                    .build());
-            // user is exist.
-            if (response.getBoolV(0)){
-                return false;
-            }
-            // #1 request rongyun server for token.
-            // #2 send complete user info the app server for persist.
-            String token = requestForToken(username);
-            app.getSp().edit().putString(App.TOKEN, token).commit();
-            app.getSp().edit().putString(App.USER_NAME, username).commit();
-            app.getSp().edit().putString(App.PASSWORD, password).commit();
-            request.request(FlyCatProto.FlyCat.newBuilder().setFlag(1).addStringV(token).addStringV(username).addStringV(password).build());
-            return true;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            warnFragment.setWarnInfo("请稍等。。。");
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.warn_fragment, warnFragment, WarnFragment.TAG);
-            transaction.commit();
         }
     }
 }

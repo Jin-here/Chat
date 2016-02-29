@@ -1,24 +1,31 @@
 package com.vgaw.rongyundemo.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.vgaw.rongyundemo.message.MatchEngine;
 import com.vgaw.rongyundemo.R;
+import com.vgaw.rongyundemo.view.MyToast;
 
 import java.util.Locale;
 
+import io.rong.imkit.RongIM;
 import io.rong.imkit.fragment.ConversationFragment;
+import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
+import io.rong.message.TextMessage;
 
 /**
  * Created by caojin on 15-10-21.
@@ -39,16 +46,16 @@ public class ConversationActivity extends BaseActivity {
      */
     private Conversation.ConversationType mConversationType;
 
-    private PopupWindow popupWindow;
-    private boolean isShown = false;
+    private boolean isLeaved = false;
+    private String anotherName = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.conversation);
         Intent intent = getIntent();
-
-        ((TextView) findViewById(R.id.tv_title)).setText(intent.getData().getQueryParameter("title"));
+        anotherName = intent.getData().getQueryParameter("title");
+        ((TextView) findViewById(R.id.tv_title)).setText(anotherName);
         final RelativeLayout rl_back = (RelativeLayout) findViewById(R.id.rl_back);
         rl_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,16 +64,35 @@ public class ConversationActivity extends BaseActivity {
             }
         });
         final RelativeLayout rl_more = (RelativeLayout) findViewById(R.id.rl_more);
-        createPopupWindow("我的位置", "成员列表");
         rl_more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isShown) {
-                    popupWindow.dismiss();
-                    isShown = false;
-                } else {
-                    popupWindow.showAsDropDown(rl_more);
-                    isShown = true;
+                showPopupWindow(v, "添加好友", "查看信息");
+            }
+        });
+        MatchEngine.getInstance().setOnMatchListener(new MatchEngine.OnMatchListener() {
+            @Override
+            public void onUserLeaved() {
+                if (!isLeaved) {
+                    /*new AlertDialog.Builder(ConversationActivity.this)
+                            .setMessage("对方已离开聊天室，将在3秒后退出")
+                            .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    MatchEngine.getInstance().initialStatus();
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            })
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    MatchEngine.getInstance().initialStatus();
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            }).create().show();*/
+                    finish();
                 }
             }
         });
@@ -103,7 +129,7 @@ public class ConversationActivity extends BaseActivity {
         fragment.setUri(uri);
     }
 
-    private void createPopupWindow(String first, String second) {
+    private void showPopupWindow(View anchorView, String first, String second) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popView = inflater.inflate(R.layout.popwindow, null);
         TextView tv_first = ((TextView) popView.findViewById(R.id.tv_first));
@@ -113,19 +139,72 @@ public class ConversationActivity extends BaseActivity {
         tv_first.setOnClickListener(popClickListener);
         tv_second.setOnClickListener(popClickListener);
 
-        popupWindow = new PopupWindow(popView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        PopupWindow popupWindow = new PopupWindow(popView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        popupWindow.setWidth((int)(100 * getResources().getDisplayMetrics().density));
         popupWindow.setBackgroundDrawable(new ColorDrawable(0));
         popupWindow.setOutsideTouchable(true);
+        popupWindow.showAsDropDown(anchorView, -popupWindow.getWidth() + anchorView.getWidth() - (int) (7 * getResources().getDisplayMetrics().density), -anchorView.getHeight() + (int) (10 * getResources().getDisplayMetrics().density));
     }
 
     private View.OnClickListener popClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.tv_first) {
-                Toast.makeText(ConversationActivity.this, "first", Toast.LENGTH_SHORT).show();
+                // 添加好友
+                new AlertDialog.Builder(ConversationActivity.this)
+                        .setMessage("确定添加 " + Html.fromHtml("<font color=\"red\">" + anotherName + "</font>") + " 为好友吗？")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                RongIM.getInstance().getRongIMClient().sendMessage(Conversation.ConversationType.PRIVATE, anotherName, TextMessage.obtain("添加好友"), "fuck", "fuck", new RongIMClient.SendMessageCallback() {
+                                    @Override
+                                    public void onError(Integer integer, RongIMClient.ErrorCode errorCode) {
+
+                                    }
+
+                                    @Override
+                                    public void onSuccess(Integer integer) {
+                                        MyToast.makeText(ConversationActivity.this, "邀请已发出，请等待对方接受").show();
+                                    }
+                                });
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        }).create().show();
             } else {
-                Toast.makeText(ConversationActivity.this, "second", Toast.LENGTH_SHORT).show();
+                // 查看信息
+                Intent intent = new Intent(ConversationActivity.this, MeActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("isMe", false);
+                bundle.putString("name", anotherName);
+                intent.putExtra("data", bundle);
+                startActivity(intent);
             }
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(ConversationActivity.this)
+                .setMessage("确认退出聊天室？")
+                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        isLeaved = true;
+                        MatchEngine.getInstance().sendLeave();
+                        dialog.dismiss();
+                        finish();
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create().show();
+    }
 }

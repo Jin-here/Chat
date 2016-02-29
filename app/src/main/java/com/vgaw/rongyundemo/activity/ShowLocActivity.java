@@ -6,15 +6,9 @@ import android.os.Handler;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
-import com.amap.api.maps.model.BitmapDescriptorFactory;
-import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
-import com.amap.api.maps.model.MarkerOptions;
-import com.amap.api.services.nearby.NearbyInfo;
-import com.vgaw.rongyundemo.DataFactory;
+import com.vgaw.rongyundemo.util.DataFactory;
 import com.vgaw.rongyundemo.R;
-
-import java.util.ArrayList;
 
 /**
  * Created by caojin on 2016/2/13.

@@ -7,7 +7,9 @@
     <color name="content_color">#707070</color>
     <color name="content_frame_color">#ff4a00</color>
 
-    <color name="blue_title">#1E90FF</color>
-    <color name="color_main">#ff4400</color>
+    <color name="blue_title">#3F51B5</color>
+    <!--<color name="color_main">#ff4400</color>-->
+    <color name="color_main">#ff4081</color>
     <color name="gray">#808080</color>
+    <color name="light_gray">#fbfbfb</color>
 </resources>
