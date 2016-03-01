@@ -12,6 +12,7 @@ import android.widget.EditText;
 
 import com.vgaw.rongyundemo.message.MatchEngine;
 import com.vgaw.rongyundemo.http.HttpCat;
+import com.vgaw.rongyundemo.message.SystemEngine;
 import com.vgaw.rongyundemo.util.DataFactory;
 import com.vgaw.rongyundemo.R;
 import com.vgaw.rongyundemo.App;
@@ -57,6 +58,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         if (getApplicationInfo().packageName.equals(App.getCurProcessName(getApplicationContext()))) {
             MatchEngine.getInstance().initial(LoginActivity.this);
+            SystemEngine.getInstance().initial(getApplicationContext());
             /**
              * IMKit SDK调用第二步,建立与服务器的连接
              */

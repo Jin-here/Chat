@@ -54,7 +54,8 @@ public class MatchEngine {
      */
     public void initial(Context mContext) {
         this.mContext = mContext;
-        RongIM.setOnReceiveMessageListener(listener);
+        //RongIM.setOnReceiveMessageListener(listener);
+        MessageDispatcher.getInstance().addOnReceiveMessageListener(listener);
     }
 
     //  邀请，同意邀请，同意邀请被拒绝，同意邀请被同意，离开聊天室
@@ -156,6 +157,11 @@ public class MatchEngine {
     public void sendLeave(){
         initialStatus();
         sendResponse(another, LEAVE);
+    }
+
+    public void sendResponse(Context mContext, String targetId, int code){
+        this.mContext = mContext;
+        sendResponse(targetId, code);
     }
 
     public void sendResponse(String targetId, int code) {

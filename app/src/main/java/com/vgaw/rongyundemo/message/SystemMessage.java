@@ -10,7 +10,6 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 
 import io.rong.imlib.MessageTag;
-import io.rong.imlib.model.MessageContent;
 
 /**
  * Created by caojin on 2016/2/29.
@@ -19,6 +18,20 @@ import io.rong.imlib.model.MessageContent;
 public class SystemMessage extends BaseMessage {
     private String name;
     private String message;
+
+    public SystemMessage(String name, String message){
+        super();
+        this.name = name;
+        this.message = message;
+    }
+
+    public String getName(){
+        return this.name;
+    }
+
+    public String getMessage(){
+        return this.message;
+    }
 
     public SystemMessage(byte[] data){
         String jsonStr = null;

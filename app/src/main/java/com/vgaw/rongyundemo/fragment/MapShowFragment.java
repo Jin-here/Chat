@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +26,17 @@ import com.amap.api.services.nearby.UploadInfo;
 import com.vgaw.rongyundemo.message.MatchEngine;
 import com.vgaw.rongyundemo.R;
 import com.vgaw.rongyundemo.activity.MainActivity;
+import com.vgaw.rongyundemo.message.SystemMessage;
 import com.vgaw.rongyundemo.util.DataFactory;
 import com.vgaw.rongyundemo.view.Loading;
 import com.vgaw.rongyundemo.view.MyToast;
 
 import java.util.ArrayList;
+
+import io.rong.imkit.RongIM;
+import io.rong.imlib.RongIMClient;
+import io.rong.imlib.model.Conversation;
+import io.rong.message.TextMessage;
 
 /**
  * Created by caojin on 2016/2/20.
@@ -44,7 +51,7 @@ public class MapShowFragment extends Fragment {
     private Runnable delayRun = new Runnable() {
         @Override
         public void run() {
-            MyToast.makeText(getActivity(), "你藏的太深啦，人家都找不到人了咧～", MyToast.LENGTH_SHORT).show();
+            MyToast.makeText(getActivity(), "你藏的太深啦，人家都找不到人了咧～").show();
             progDialog.dismiss();
         }
     };
@@ -71,19 +78,28 @@ public class MapShowFragment extends Fragment {
         view.findViewById(R.id.btn_test).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyToast.makeText(getActivity(), "fuck").show();
-                Loading.getInstance(getActivity()).show();
+                RongIM.getInstance().getRongIMClient().sendMessage(Conversation.ConversationType.PRIVATE, "caojin", new SystemMessage("chenkai", "添加好友"), "", "", new RongIMClient.SendMessageCallback() {
+                    @Override
+                    public void onError(Integer integer, RongIMClient.ErrorCode errorCode) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(Integer integer) {
+                        MyToast.makeText(getActivity(), "邀请已发出，请等待对方接受").show();
+                    }
+                });
             }
         });
         ((Button) view.findViewById(R.id.btn_match)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*isPaused = false;
+                isPaused = false;
                 progDialog.show();
                 //启动定位
                 mLocationClient.startLocation();
-                handler.postDelayed(delayRun, TIME_OUT);*/
-                MatchEngine.getInstance().sendResponse(et.isChecked() ? "caojin" : "chenkai", MatchEngine.INVITE);
+                handler.postDelayed(delayRun, TIME_OUT);
+                //MatchEngine.getInstance().sendResponse(getActivity(), et.isChecked() ? "caojin" : "chenkai", MatchEngine.INVITE);
             }
         });
 
@@ -122,7 +138,7 @@ public class MapShowFragment extends Fragment {
                                 if (info.getUserID().equals(DataFactory.getInstance().getUsername())){
                                     continue;
                                 }
-                                MatchEngine.getInstance().sendResponse(info.getUserID(), MatchEngine.INVITE);
+                                MatchEngine.getInstance().sendResponse(getActivity(), info.getUserID(), MatchEngine.INVITE);
                             }
                         }
                     } else {
@@ -150,9 +166,9 @@ public class MapShowFragment extends Fragment {
         public void onLocationChanged(AMapLocation aMapLocation) {
             if (aMapLocation != null) {
                 if (aMapLocation.getErrorCode() == 0) {
+                    Log.e("fuck", aMapLocation.getLatitude() + ":" + aMapLocation.getLongitude());
                     //定位成功回调信息，设置相关消息
-                    double off = Double.parseDouble(et.getText().toString());
-                    latLonPoint = new LatLonPoint(aMapLocation.getLatitude() + off, aMapLocation.getLongitude() + off);
+                    latLonPoint = new LatLonPoint(aMapLocation.getLatitude(), aMapLocation.getLongitude() - (et.isChecked() ? 0.01 : 0));
                     DataFactory.getInstance().setLat((int) aMapLocation.getLatitude());
                     DataFactory.getInstance().setLng((int) aMapLocation.getLongitude());
                     uploadLocInfo();

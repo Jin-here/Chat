@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.vgaw.rongyundemo.message.MatchEngine;
 import com.vgaw.rongyundemo.R;
+import com.vgaw.rongyundemo.message.SystemMessage;
 import com.vgaw.rongyundemo.view.MyToast;
 
 import java.util.Locale;
@@ -151,12 +152,12 @@ public class ConversationActivity extends BaseActivity {
         public void onClick(View v) {
             if (v.getId() == R.id.tv_first) {
                 // 添加好友
-                new AlertDialog.Builder(ConversationActivity.this)
+                /*new AlertDialog.Builder(ConversationActivity.this)
                         .setMessage("确定添加 " + Html.fromHtml("<font color=\"red\">" + anotherName + "</font>") + " 为好友吗？")
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                RongIM.getInstance().getRongIMClient().sendMessage(Conversation.ConversationType.PRIVATE, anotherName, TextMessage.obtain("添加好友"), "fuck", "fuck", new RongIMClient.SendMessageCallback() {
+                                RongIM.getInstance().getRongIMClient().sendMessage(Conversation.ConversationType.PRIVATE, anotherName, new SystemMessage("fuck", "添加好友"), "", "", new RongIMClient.SendMessageCallback() {
                                     @Override
                                     public void onError(Integer integer, RongIMClient.ErrorCode errorCode) {
 
@@ -174,7 +175,18 @@ public class ConversationActivity extends BaseActivity {
                             public void onClick(DialogInterface dialog, int which) {
 
                             }
-                        }).create().show();
+                        }).create().show();*/
+                RongIM.getInstance().getRongIMClient().sendMessage(Conversation.ConversationType.PRIVATE, anotherName, new SystemMessage("fuck", "添加好友"), "", "", new RongIMClient.SendMessageCallback() {
+                    @Override
+                    public void onError(Integer integer, RongIMClient.ErrorCode errorCode) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(Integer integer) {
+                        MyToast.makeText(ConversationActivity.this, "邀请已发出，请等待对方接受").show();
+                    }
+                });
             } else {
                 // 查看信息
                 Intent intent = new Intent(ConversationActivity.this, MeActivity.class);
