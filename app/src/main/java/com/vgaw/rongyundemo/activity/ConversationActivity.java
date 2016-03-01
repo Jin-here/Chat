@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.vgaw.rongyundemo.message.MatchEngine;
 import com.vgaw.rongyundemo.R;
 import com.vgaw.rongyundemo.message.SystemMessage;
+import com.vgaw.rongyundemo.util.DataFactory;
 import com.vgaw.rongyundemo.view.MyToast;
 
 import java.util.Locale;
@@ -61,7 +62,7 @@ public class ConversationActivity extends BaseActivity {
         rl_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                confirmQuit();
             }
         });
         final RelativeLayout rl_more = (RelativeLayout) findViewById(R.id.rl_more);
@@ -152,12 +153,12 @@ public class ConversationActivity extends BaseActivity {
         public void onClick(View v) {
             if (v.getId() == R.id.tv_first) {
                 // 添加好友
-                /*new AlertDialog.Builder(ConversationActivity.this)
+                new AlertDialog.Builder(ConversationActivity.this)
                         .setMessage("确定添加 " + Html.fromHtml("<font color=\"red\">" + anotherName + "</font>") + " 为好友吗？")
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                RongIM.getInstance().getRongIMClient().sendMessage(Conversation.ConversationType.PRIVATE, anotherName, new SystemMessage("fuck", "添加好友"), "", "", new RongIMClient.SendMessageCallback() {
+                                RongIM.getInstance().getRongIMClient().sendMessage(Conversation.ConversationType.PRIVATE, anotherName, new SystemMessage(DataFactory.getInstance().getUsername(), "添加好友"), "", "", new RongIMClient.SendMessageCallback() {
                                     @Override
                                     public void onError(Integer integer, RongIMClient.ErrorCode errorCode) {
 
@@ -175,18 +176,7 @@ public class ConversationActivity extends BaseActivity {
                             public void onClick(DialogInterface dialog, int which) {
 
                             }
-                        }).create().show();*/
-                RongIM.getInstance().getRongIMClient().sendMessage(Conversation.ConversationType.PRIVATE, anotherName, new SystemMessage("fuck", "添加好友"), "", "", new RongIMClient.SendMessageCallback() {
-                    @Override
-                    public void onError(Integer integer, RongIMClient.ErrorCode errorCode) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(Integer integer) {
-                        MyToast.makeText(ConversationActivity.this, "邀请已发出，请等待对方接受").show();
-                    }
-                });
+                        }).create().show();
             } else {
                 // 查看信息
                 Intent intent = new Intent(ConversationActivity.this, MeActivity.class);
@@ -201,6 +191,14 @@ public class ConversationActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+        confirmQuit();
+    }
+
+    private void confirmQuit(){
+        if (mConversationType != Conversation.ConversationType.CHATROOM){
+            finish();
+            return;
+        }
         new AlertDialog.Builder(ConversationActivity.this)
                 .setMessage("确认退出聊天室？")
                 .setPositiveButton("确认", new DialogInterface.OnClickListener() {

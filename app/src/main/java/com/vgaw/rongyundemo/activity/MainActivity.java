@@ -29,8 +29,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     public AMapLocationClient mLocationClient = null;
     private String[] iconContextList = new String[]{"会话", "好友", "我"};
-    private int[] iconOrangeList = new int[]{R.drawable.home_orange, R.drawable.talklist_orange, R.drawable.me_orange};
-    private int[] iconGrayList = new int[]{R.drawable.home_gray, R.drawable.talklist_gray, R.drawable.me_gray};
+    private int[] iconOrangeList = new int[]{R.drawable.talklist_orange, R.drawable.friend_orange, R.drawable.me_orange};
+    private int[] iconGrayList = new int[]{R.drawable.talklist_gray, R.drawable.friend_gray, R.drawable.me_gray};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
