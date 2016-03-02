@@ -6,9 +6,12 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.vgaw.rongyundemo.R;
 import com.vgaw.rongyundemo.activity.MainActivity;
+import com.vgaw.rongyundemo.util.DataFactory;
 import com.vgaw.rongyundemo.view.MyToast;
 
 import io.rong.imlib.RongIMClient;
@@ -38,16 +41,18 @@ public class SystemEngine {
         public boolean onReceived(Message message, int i) {
             MessageContent msgContent = message.getContent();
             if (msgContent instanceof SystemMessage){
-                Intent intent = new Intent(mContext, MainActivity.class);
+                /*Intent intent = new Intent(mContext, MainActivity.class);
                 PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-                Notification.Builder mBuilder = new Notification.Builder(mContext)
+                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
                         .setSmallIcon(R.drawable.default_head)
                         .setContentTitle("新朋友")
                         .setContentText(((SystemMessage) msgContent).getName() + "请求加为好友")
                         .setContentIntent(pendingIntent);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    ((NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE)).notify(0, mBuilder.build());
-                }
+                ((NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE)).notify(0, mBuilder.build());*/
+                /*Intent intent = new Intent("com.vgaw.rongyundemo.addfriend");
+                intent.putExtra("data", msgContent);
+                LocalBroadcastManager.getInstance(mContext).sendBroadcast(intent);*/
+                DataFactory.getInstance().addSysMsg((SystemMessage) msgContent);
             }
             return true;
 

@@ -1,18 +1,24 @@
 package com.vgaw.rongyundemo.fragment;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -25,10 +31,12 @@ import com.amap.api.services.nearby.NearbySearch;
 import com.amap.api.services.nearby.NearbySearchFunctionType;
 import com.amap.api.services.nearby.NearbySearchResult;
 import com.amap.api.services.nearby.UploadInfo;
+import com.vgaw.rongyundemo.http.HttpCat;
 import com.vgaw.rongyundemo.message.MatchEngine;
 import com.vgaw.rongyundemo.R;
 import com.vgaw.rongyundemo.activity.MainActivity;
 import com.vgaw.rongyundemo.message.SystemMessage;
+import com.vgaw.rongyundemo.protopojo.FlyCatProto;
 import com.vgaw.rongyundemo.util.DataFactory;
 import com.vgaw.rongyundemo.view.Loading;
 import com.vgaw.rongyundemo.view.MyToast;
@@ -50,6 +58,7 @@ public class MapShowFragment extends Fragment {
     // 防止主动取消请求后，由于请求仍在执行而造成的匹配仍在继续
     private boolean isPaused = false;
     private ProgressDialog progDialog;
+    private LinearLayout ll_msg;
     private Handler handler = new Handler();
     private Runnable delayRun = new Runnable() {
         @Override
@@ -98,7 +107,7 @@ public class MapShowFragment extends Fragment {
         view.findViewById(R.id.btn_test).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RongIM.getInstance().getRongIMClient().sendMessage(Conversation.ConversationType.PRIVATE, "caojin", new SystemMessage("chenkai", "添加好友"), "", "", new RongIMClient.SendMessageCallback() {
+                RongIM.getInstance().getRongIMClient().sendMessage(Conversation.ConversationType.PRIVATE, "caojin", new SystemMessage(SystemMessage.INVITE, "chenkai"), "", "", new RongIMClient.SendMessageCallback() {
                     @Override
                     public void onError(Integer integer, RongIMClient.ErrorCode errorCode) {
 
@@ -114,12 +123,12 @@ public class MapShowFragment extends Fragment {
         view.findViewById(R.id.fb_match).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isPaused = false;
+                /*isPaused = false;
                 progDialog.show();
                 //启动定位
                 mLocationClient.startLocation();
-                handler.postDelayed(delayRun, TIME_OUT);
-                //MatchEngine.getInstance().sendResponse(getActivity(), et.isChecked() ? "caojin" : "chenkai", MatchEngine.INVITE);
+                handler.postDelayed(delayRun, TIME_OUT);*/
+                MatchEngine.getInstance().sendResponse(getActivity(), et.isChecked() ? "caojin" : "chenkai", MatchEngine.INVITE);
             }
         });
 
@@ -131,6 +140,90 @@ public class MapShowFragment extends Fragment {
         mLocationClient.setLocationListener(mLocationListener);
         //调用异步查询接口，该接口只add一次
         NearbySearch.getInstance(getActivity()).addNearbyListener(nearbyListener);
+
+        ll_msg = (LinearLayout) view.findViewById(R.id.ll_msg);
+        for (SystemMessage msg : DataFactory.getInstance().getSysMsg()){
+            ll_msg.addView(getAddFriendView(ll_msg, msg));
+        }
+        DataFactory.getInstance().setOnAddFriendListener(new DataFactory.OnAddFriendListener() {
+            @Override
+            public void onFriendAdded(final SystemMessage msg) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ll_msg.addView(getAddFriendView(ll_msg, msg));
+                    }
+                });
+            }
+        });
+    }
+
+    private View getAddFriendView(final LinearLayout parent, final SystemMessage msg){
+        final View view = getActivity().getLayoutInflater().inflate(R.layout.msg_template, null);
+        boolean isInvite = (msg.getCode() != SystemMessage.INVITE);
+        boolean isFriend = (msg.getCode() == SystemMessage.AGREE);
+        ((TextView)view.findViewById(R.id.tv_title)).setText(isInvite ? msg.getName() : "新朋友");
+        ((TextView)view.findViewById(R.id.tv_content)).setText(isInvite ? (isFriend ? "接受了你的好友请求" : "拒绝了你的好友请求") : msg.getName() + " 请求加为好友");
+        view.findViewById(R.id.ll_request).setVisibility(isInvite ? View.GONE : View.VISIBLE);
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                parent.removeView(view);
+                DataFactory.getInstance().removeSysMsg(msg);
+                return true;
+            }
+        });
+        if (isInvite){
+            return view;
+        }
+        view.findViewById(R.id.btn_agree).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RongIM.getInstance().getRongIMClient().sendMessage(Conversation.ConversationType.PRIVATE, msg.getName(), new SystemMessage(SystemMessage.AGREE, DataFactory.getInstance().getUsername()), "", "", new RongIMClient.SendMessageCallback() {
+                    @Override
+                    public void onError(Integer integer, RongIMClient.ErrorCode errorCode) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(Integer integer) {
+                        HttpCat.fly(FlyCatProto.FlyCat.newBuilder()
+                                .setFlag(6)
+                                .addStringV(DataFactory.getInstance().getUsername())
+                                .addStringV(msg.getName()).build(), new HttpCat.AbstractResponseListener() {
+                            @Override
+                            public void onSuccess(FlyCatProto.FlyCat flyCat) {
+                                if (flyCat.getFlag() == 1) {
+                                    MyToast.makeText(getActivity(), "好啦，现在你们可以聊天啦").show();
+                                    parent.removeView(view);
+                                    DataFactory.getInstance().removeSysMsg(msg);
+                                } else {
+                                    MyToast.makeText(getActivity(), "哎呀，您吓到我了，请慢点来").show();
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        view.findViewById(R.id.btn_refuse).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RongIM.getInstance().getRongIMClient().sendMessage(Conversation.ConversationType.PRIVATE, msg.getName(), new SystemMessage(SystemMessage.REFUSE, DataFactory.getInstance().getUsername()), "", "", new RongIMClient.SendMessageCallback() {
+                    @Override
+                    public void onSuccess(Integer integer) {
+                        parent.removeView(view);
+                        DataFactory.getInstance().removeSysMsg(msg);
+                    }
+
+                    @Override
+                    public void onError(Integer integer, RongIMClient.ErrorCode errorCode) {
+                        MyToast.makeText(getActivity(), "哎呀，您吓到我了，请慢点来").show();
+                    }
+                });
+            }
+        });
+        return view;
     }
 
     NearbySearch.NearbyListener nearbyListener = new NearbySearch.NearbyListener() {

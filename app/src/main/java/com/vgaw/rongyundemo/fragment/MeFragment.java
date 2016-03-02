@@ -39,9 +39,29 @@ public class MeFragment extends Fragment{
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        view.findViewById(R.id.rl_back).setOnClickListener(listener);
         if (data != null){
             ((TextView)view.findViewById(R.id.tv_title)).setText(data.getBoolean("isMe") ? "我" : "TA");
             ((TextView)view.findViewById(R.id.tv_name)).setText(data.getString("name"));
+            view.findViewById(R.id.layout_me).setVisibility(data.getBoolean("isMe") ? View.VISIBLE : View.GONE);
         }
+
     }
+
+    View.OnClickListener listener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.rl_back:
+                    getActivity().finish();
+                    break;
+                case R.id.tv_set:
+                    break;
+                case R.id.tv_feedback:
+                    break;
+                case R.id.tv_about:
+                    break;
+            }
+        }
+    };
 }

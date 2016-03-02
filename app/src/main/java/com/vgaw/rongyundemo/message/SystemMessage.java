@@ -16,13 +16,35 @@ import io.rong.imlib.MessageTag;
  */
 @MessageTag(value = "app:system", flag = MessageTag.NONE)
 public class SystemMessage extends BaseMessage {
+    public static final int INVITE = 7;
+    public static final int AGREE = 8;
+    public static final int REFUSE = 9;
+    public static final int IGNORE = 10;
+
+    private int code;
     private String name;
     private String message;
 
-    public SystemMessage(String name, String message){
+    public SystemMessage(int code){
         super();
+        this.code = code;
+    }
+
+    public SystemMessage(int code, String name){
+        super();
+        this.code = code;
+        this.name = name;
+    }
+
+    public SystemMessage(int code, String name, String message){
+        super();
+        this.code = code;
         this.name = name;
         this.message = message;
+    }
+
+    public int getCode(){
+        return this.code;
     }
 
     public String getName(){
@@ -44,6 +66,9 @@ public class SystemMessage extends BaseMessage {
         try {
             JSONObject jsonObj = new JSONObject(jsonStr);
 
+            if (jsonObj.has("code")){
+                this.code = jsonObj.optInt("code");
+            }
             if (jsonObj.has("name")){
                 this.name = jsonObj.optString("name");
             }
@@ -59,6 +84,7 @@ public class SystemMessage extends BaseMessage {
     public byte[] encode() {
         JSONObject jsonObject = new JSONObject();
         try {
+            jsonObject.put("code", this.code);
             jsonObject.put("name", this.name);
             jsonObject.put("message", this.message);
         } catch (JSONException e) {
@@ -74,6 +100,7 @@ public class SystemMessage extends BaseMessage {
     }
 
     public SystemMessage(Parcel in){
+        this.code = ParcelUtils.readIntFromParcel(in);
         this.name = ParcelUtils.readFromParcel(in);
         this.message = ParcelUtils.readFromParcel(in);
     }
@@ -97,6 +124,7 @@ public class SystemMessage extends BaseMessage {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        ParcelUtils.writeToParcel(dest, this.code);
         ParcelUtils.writeToParcel(dest, this.name);
         ParcelUtils.writeToParcel(dest, this.message);
     }

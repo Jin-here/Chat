@@ -4,8 +4,12 @@ import android.content.Context;
 import android.view.WindowManager;
 
 import com.amap.api.services.nearby.NearbyInfo;
+import com.vgaw.rongyundemo.message.SystemEngine;
+import com.vgaw.rongyundemo.message.SystemMessage;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by caojin on 2016/2/17.
@@ -19,12 +23,43 @@ public class DataFactory {
     private ArrayList<NearbyInfo> nearbyInfoList;
     private int lat;
     private int lng;
+    private ArrayList<SystemMessage> sysMsgList = new ArrayList<>();
+    private ArrayList<String> friendList = new ArrayList<>();
 
-    public void setId(long id){
+    public void setFriendList(ArrayList<String> friendList){
+        this.friendList = friendList;
+    }
+
+    public ArrayList<String> getFriendList(){
+        return this.friendList;
+    }
+
+    public void addSysMsg(SystemMessage msg) {
+        for (SystemMessage s : sysMsgList){
+            if (s.getCode() == msg.getCode()
+                    && s.getName().equals(msg.getName())){
+                return;
+            }
+        }
+        sysMsgList.add(msg);
+        if (listener1 != null) {
+            listener1.onFriendAdded(msg);
+        }
+    }
+
+    public void removeSysMsg(SystemMessage msg){
+        sysMsgList.remove(msg);
+    }
+
+    public ArrayList<SystemMessage> getSysMsg() {
+        return this.sysMsgList;
+    }
+
+    public void setId(long id) {
         this.id = id;
     }
 
-    public long getId(){
+    public long getId() {
         return this.id;
     }
 
@@ -50,16 +85,17 @@ public class DataFactory {
 
     public void setNearbyInfoList(ArrayList<NearbyInfo> nearbyInfoList) {
         this.nearbyInfoList = nearbyInfoList;
-        if (listener != null){
+        if (listener != null) {
             listener.onLocUpdated();
         }
     }
 
     private static DataFactory instance = new DataFactory();
 
-    public DataFactory(){}
+    public DataFactory() {
+    }
 
-    public static DataFactory getInstance(){
+    public static DataFactory getInstance() {
         return instance;
     }
 
@@ -79,17 +115,26 @@ public class DataFactory {
         this.pwd = pwd;
     }
 
-    public interface OnLocUpdatedListener{
+    public interface OnLocUpdatedListener {
         void onLocUpdated();
     }
 
-    private OnLocUpdatedListener listener;
+    public interface OnAddFriendListener {
+        void onFriendAdded(SystemMessage msg);
+    }
 
-    public void setOnLocUpdatedListener(OnLocUpdatedListener listener){
+    private OnLocUpdatedListener listener;
+    private OnAddFriendListener listener1;
+
+    public void setOnLocUpdatedListener(OnLocUpdatedListener listener) {
         this.listener = listener;
     }
 
-    public void initial(Context mContext){
+    public void setOnAddFriendListener(OnAddFriendListener listener1) {
+        this.listener1 = listener1;
+    }
+
+    public void initial(Context mContext) {
         this.mContext = mContext;
     }
 }

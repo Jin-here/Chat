@@ -15,9 +15,11 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.vgaw.rongyundemo.http.HttpCat;
 import com.vgaw.rongyundemo.message.MatchEngine;
 import com.vgaw.rongyundemo.R;
 import com.vgaw.rongyundemo.message.SystemMessage;
+import com.vgaw.rongyundemo.protopojo.FlyCatProto;
 import com.vgaw.rongyundemo.util.DataFactory;
 import com.vgaw.rongyundemo.view.MyToast;
 
@@ -76,25 +78,29 @@ public class ConversationActivity extends BaseActivity {
             @Override
             public void onUserLeaved() {
                 if (!isLeaved) {
-                    /*new AlertDialog.Builder(ConversationActivity.this)
-                            .setMessage("对方已离开聊天室，将在3秒后退出")
-                            .setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    MatchEngine.getInstance().initialStatus();
-                                    dialog.dismiss();
-                                    finish();
-                                }
-                            })
-                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    MatchEngine.getInstance().initialStatus();
-                                    dialog.dismiss();
-                                    finish();
-                                }
-                            }).create().show();*/
-                    finish();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            new AlertDialog.Builder(ConversationActivity.this)
+                                    .setMessage("对方已离开聊天室，将在3秒后退出")
+                                    .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            MatchEngine.getInstance().initialStatus();
+                                            dialog.dismiss();
+                                            finish();
+                                        }
+                                    })
+                                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            MatchEngine.getInstance().initialStatus();
+                                            dialog.dismiss();
+                                            finish();
+                                        }
+                                    }).create().show();
+                        }
+                    });
                 }
             }
         });
@@ -158,7 +164,7 @@ public class ConversationActivity extends BaseActivity {
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                RongIM.getInstance().getRongIMClient().sendMessage(Conversation.ConversationType.PRIVATE, anotherName, new SystemMessage(DataFactory.getInstance().getUsername(), "添加好友"), "", "", new RongIMClient.SendMessageCallback() {
+                                RongIM.getInstance().getRongIMClient().sendMessage(Conversation.ConversationType.PRIVATE, anotherName, new SystemMessage(SystemMessage.INVITE, DataFactory.getInstance().getUsername(), "添加好友"), "", "", new RongIMClient.SendMessageCallback() {
                                     @Override
                                     public void onError(Integer integer, RongIMClient.ErrorCode errorCode) {
 

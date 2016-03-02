@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.vgaw.rongyundemo.message.MatchMessage;
+import com.vgaw.rongyundemo.message.SysMsgTem;
 import com.vgaw.rongyundemo.message.SystemMessage;
 import com.vgaw.rongyundemo.util.DataFactory;
 
@@ -40,6 +41,8 @@ public class App extends Application {
             // 注册自定义消息
             RongIM.registerMessageType(MatchMessage.class);
             RongIM.registerMessageType(SystemMessage.class);
+            // 注册自定义消息显示模板
+            //RongIM.registerMessageTemplate(new SysMsgTem());
         }
 
     }

@@ -1,6 +1,5 @@
 package com.vgaw.rongyundemo.activity;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
 import android.view.View;
@@ -11,16 +10,11 @@ import android.widget.TextView;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.services.nearby.NearbySearch;
-import com.vgaw.rongyundemo.fragment.FriendFragment;
-import com.vgaw.rongyundemo.util.DataFactory;
 import com.vgaw.rongyundemo.R;
-import com.vgaw.rongyundemo.fragment.ConversationListDynamicFragment;
+import com.vgaw.rongyundemo.fragment.FriendFragment;
 import com.vgaw.rongyundemo.fragment.MapShowFragment;
 import com.vgaw.rongyundemo.fragment.MeFragment;
-import com.vgaw.rongyundemo.protopojo.FlyCatProto;
-import com.vgaw.rongyundemo.util.WarnFragmentHelper;
-
-import io.rong.imkit.RongIM;
+import com.vgaw.rongyundemo.util.DataFactory;
 
 /**
  * Created by caojin on 15-10-21.
