@@ -196,10 +196,16 @@ public class MapShowFragment extends Fragment {
 
                     @Override
                     public void onSuccess(Integer integer) {
-                        HttpCat.fly(FlyCatProto.FlyCat.newBuilder()
-                                .setFlag(6)
-                                .addStringV(DataFactory.getInstance().getUsername())
-                                .addStringV(msg.getName()).build(), new HttpCat.AbstractResponseListener() {
+                        FlyCatProto.FlyCat.Builder builder = FlyCatProto.FlyCat.newBuilder()
+                                .setFlag(6);
+                        if (DataFactory.getInstance().getUsername().compareTo(msg.getName()) > 0){
+                            builder.addStringV(msg.getName())
+                                    .addStringV(DataFactory.getInstance().getUsername());
+                        }else {
+                            builder.addStringV(DataFactory.getInstance().getUsername())
+                                    .addStringV(msg.getName());
+                        }
+                        HttpCat.fly(builder.build(), new HttpCat.AbstractResponseListener() {
                             @Override
                             public void onSuccess(FlyCatProto.FlyCat flyCat) {
                                 if (flyCat.getFlag() == 1) {
