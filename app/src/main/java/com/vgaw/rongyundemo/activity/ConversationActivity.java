@@ -74,7 +74,7 @@ public class ConversationActivity extends BaseActivity {
                 showPopupWindow(v, "添加好友", "查看信息");
             }
         });
-        MatchEngine.getInstance().setOnMatchListener(new MatchEngine.OnMatchListener() {
+        MatchEngine.getInstance().setOnUserLeavedListener(new MatchEngine.OnUserLeavedListener() {
             @Override
             public void onUserLeaved() {
                 if (!isLeaved) {

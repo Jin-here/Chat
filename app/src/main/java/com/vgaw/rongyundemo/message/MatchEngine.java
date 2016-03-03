@@ -3,6 +3,7 @@ package com.vgaw.rongyundemo.message;
 import android.content.Context;
 import android.util.Log;
 
+import com.amap.api.maps.AMap;
 import com.vgaw.rongyundemo.util.DataFactory;
 
 import java.security.MessageDigest;
@@ -28,6 +29,9 @@ public class MatchEngine {
     private final int AGREE_AGREE = 9;
     private final int AGREE_REFUSE = 10;
     private final int LEAVE = 11;
+
+    // 总开关
+    private boolean canBeMatched = false;
 
     // 是否可以接受别人邀请
     private boolean can_agree = true;
@@ -70,6 +74,9 @@ public class MatchEngine {
                 synchronized (MatchMessage.class) {
                     int code = ((MatchMessage) msgContent).getCode();
                     final String targetId = message.getSenderUserId();
+                    if (!canBeMatched && code != LEAVE){
+                        return true;
+                    }
                     switch (code) {
                         /***********************作为被邀请方(一次回复只能收到一次对应回复)，一旦回复就会被锁住，所以收到的对应回复和回复是对应的**********************************/
                         case INVITE:
@@ -105,7 +112,10 @@ public class MatchEngine {
                             can_agree = false;
                             now_num++;
                             String chatRoomId = ((MatchMessage) msgContent).getChatRoomId();
-                            RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.CHATROOM, chatRoomId, targetId);
+                            //RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.CHATROOM, chatRoomId, targetId);
+                            if (listener2 != null){
+                                listener2.onMatched(chatRoomId, targetId);
+                            }
                             break;
 
                         /***********************作为邀请方**********************************/
@@ -125,7 +135,10 @@ public class MatchEngine {
                                         // 互斥锁
                                         can_accept = false;
                                         can_agree = false;
-                                        RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.CHATROOM, chatRoomId1, targetId);
+                                        //RongIM.getInstance().startConversation(mContext, Conversation.ConversationType.CHATROOM, chatRoomId1, targetId);
+                                        if (listener2 != null){
+                                            listener2.onMatched(chatRoomId1, targetId);
+                                        }
                                     }
                                 });
                             } else {
@@ -203,13 +216,26 @@ public class MatchEngine {
         return sb.toString();
     }
 
-    public interface OnMatchListener {
+    public interface OnUserLeavedListener {
         void onUserLeaved();
     }
 
-    private OnMatchListener listener1 = null;
+    public interface OnMatchedListener{
+        void onMatched(String chatRoomId, String targetId);
+    }
 
-    public void setOnMatchListener(OnMatchListener listener) {
+    private OnUserLeavedListener listener1 = null;
+    private OnMatchedListener listener2 = null;
+
+    public void setOnUserLeavedListener(OnUserLeavedListener listener) {
         this.listener1 = listener;
+    }
+
+    public void setOnMatchedListener(OnMatchedListener listener){
+        this.listener2 = listener;
+    }
+
+    public void setCanBeMatched(boolean canBeMatched){
+        this.canBeMatched = canBeMatched;
     }
 }

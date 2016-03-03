@@ -120,15 +120,24 @@ public class MapShowFragment extends Fragment {
                 });
             }
         });
+        MatchEngine.getInstance().setOnMatchedListener(new MatchEngine.OnMatchedListener() {
+            @Override
+            public void onMatched(String chatRoomId, String targetId) {
+                progDialog.dismiss();
+                RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, chatRoomId, targetId);
+            }
+        });
         view.findViewById(R.id.fb_match).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*isPaused = false;
+                MatchEngine.getInstance().setCanBeMatched(true);
+                MatchEngine.getInstance().initialStatus();
+                isPaused = false;
                 progDialog.show();
                 //启动定位
                 mLocationClient.startLocation();
-                handler.postDelayed(delayRun, TIME_OUT);*/
-                MatchEngine.getInstance().sendResponse(getActivity(), et.isChecked() ? "caojin" : "chenkai", MatchEngine.INVITE);
+                handler.postDelayed(delayRun, TIME_OUT);
+                //MatchEngine.getInstance().sendResponse(getActivity(), et.isChecked() ? "caojin" : "chenkai", MatchEngine.INVITE);
             }
         });
 
@@ -243,16 +252,19 @@ public class MapShowFragment extends Fragment {
 
                     if (nearbyInfoList.size() > 1) {
                         DataFactory.getInstance().setNearbyInfoList(nearbyInfoList);
-                        MyToast.makeText(getActivity(), nearbyInfoList.get(1).getUserID()).show();
+                        StringBuilder sb = new StringBuilder();
                         if (!isPaused) {
-                            progDialog.dismiss();
+                            isPaused = true;
+                            //progDialog.dismiss();
                             //RongIM.getInstance().startConversation(getActivity(), Conversation.ConversationType.CHATROOM, "9527", "聊天室");
                             for (NearbyInfo info : nearbyInfoList){
+                                sb.append(info.getUserID() + "\n");
                                 if (info.getUserID().equals(DataFactory.getInstance().getUsername())){
                                     continue;
                                 }
                                 MatchEngine.getInstance().sendResponse(getActivity(), info.getUserID(), MatchEngine.INVITE);
                             }
+                            MyToast.makeText(getActivity(), sb.toString()).show();
                         }
                     } else {
                         if (!isPaused){
@@ -335,6 +347,7 @@ public class MapShowFragment extends Fragment {
         progDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
+                MatchEngine.getInstance().setCanBeMatched(false);
                 isPaused = true;
                 handler.removeCallbacks(delayRun);
                 handler.removeCallbacks(matchRun);

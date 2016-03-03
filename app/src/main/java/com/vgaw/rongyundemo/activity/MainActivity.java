@@ -146,7 +146,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //stopAMap();
+        stopAMap();
     }
 
     private void stopAMap() {
