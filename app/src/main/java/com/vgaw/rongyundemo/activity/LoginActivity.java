@@ -1,5 +1,8 @@
 package com.vgaw.rongyundemo.activity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -39,6 +42,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        setStatusBarColor(getResources().getColor(android.R.color.background_dark));
 
         et_username = (EditText) findViewById(R.id.et_username);
         et_password = (EditText) findViewById(R.id.et_password);
@@ -118,6 +122,21 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
+        if (v.getId() == R.id.tv_net){
+            final Dialog dialog = new Dialog(LoginActivity.this, R.style.loading_dialog);
+            View view = getLayoutInflater().inflate(R.layout.net_set, null);
+            final EditText et_net = (EditText) view.findViewById(R.id.et_net);
+            view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HttpCat.setUri(et_net.getText().toString());
+                    dialog.dismiss();
+                }
+            });
+            dialog.setContentView(view);
+            dialog.show();
+            return;
+        }
         final String username = et_username.getText().toString();
         final String password = et_password.getText().toString();
 

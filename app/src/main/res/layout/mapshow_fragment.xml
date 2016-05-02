@@ -3,35 +3,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical">
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <include layout="@layout/title_layout" />
 
         <LinearLayout
+            android:id="@+id/ll_msg"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <include layout="@layout/title_layout" />
-
-            <LinearLayout
-                android:id="@+id/ll_msg"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
-            <FrameLayout
-                android:id="@+id/rong_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
         </LinearLayout>
-    </ScrollView>
+
+        <FrameLayout
+            android:id="@+id/rong_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,13 +35,8 @@
         <ToggleButton
             android:id="@+id/tb"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/btn_test"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="测试" />
+            android:visibility="invisible" />
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -56,5 +45,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+        android:background="@color/color_main"
         android:src="@drawable/match" />
 </FrameLayout>

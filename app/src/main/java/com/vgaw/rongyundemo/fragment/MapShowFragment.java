@@ -104,22 +104,6 @@ public class MapShowFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ((TextView) view.findViewById(R.id.tv_title)).setText("会话列表");
         et = (ToggleButton) view.findViewById(R.id.tb);
-        view.findViewById(R.id.btn_test).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RongIM.getInstance().getRongIMClient().sendMessage(Conversation.ConversationType.PRIVATE, "caojin", new SystemMessage(SystemMessage.INVITE, "chenkai"), "", "", new RongIMClient.SendMessageCallback() {
-                    @Override
-                    public void onError(Integer integer, RongIMClient.ErrorCode errorCode) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(Integer integer) {
-                        MyToast.makeText(getActivity(), "邀请已发出，请等待对方接受").show();
-                    }
-                });
-            }
-        });
         MatchEngine.getInstance().setOnMatchedListener(new MatchEngine.OnMatchedListener() {
             @Override
             public void onMatched(String chatRoomId, String targetId) {

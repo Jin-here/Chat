@@ -71,7 +71,7 @@ public class MatchEngine {
             }
             MessageContent msgContent = message.getContent();
             if (msgContent instanceof MatchMessage) {
-                synchronized (MatchMessage.class) {
+                synchronized (this) {
                     int code = ((MatchMessage) msgContent).getCode();
                     final String targetId = message.getSenderUserId();
                     if (!canBeMatched && code != LEAVE){

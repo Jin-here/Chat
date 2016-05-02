@@ -39,9 +39,15 @@ public class MeFragment extends Fragment{
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        view.findViewById(R.id.rl_back).setOnClickListener(listener);
         if (data != null){
-            ((TextView)view.findViewById(R.id.tv_title)).setText(data.getBoolean("isMe") ? "我" : "TA");
+            boolean isMe = data.getBoolean("isMe");
+            View rl_back = view.findViewById(R.id.rl_back);
+            if (!isMe){
+                rl_back.setOnClickListener(listener);
+            }else {
+                rl_back.setVisibility(View.GONE);
+            }
+            ((TextView)view.findViewById(R.id.tv_title)).setText(isMe ? "我" : "TA");
             ((TextView)view.findViewById(R.id.tv_name)).setText(data.getString("name"));
             view.findViewById(R.id.layout_me).setVisibility(data.getBoolean("isMe") ? View.VISIBLE : View.GONE);
         }
