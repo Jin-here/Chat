@@ -184,7 +184,7 @@ public class ConversationActivity extends BaseActivity {
             if (v.getId() == R.id.tv_first) {
                 // 添加好友
                 new AlertDialog.Builder(ConversationActivity.this)
-                        .setMessage("确定添加 " + Html.fromHtml("<font color=\"red\">" + anotherName + "</font>") + " 为好友吗？")
+                        .setMessage(Html.fromHtml("确定添加 <font color=\"#FF4081\">" + anotherName + "</font> 为好友吗？"))
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

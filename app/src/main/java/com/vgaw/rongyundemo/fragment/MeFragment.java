@@ -63,6 +63,7 @@ public class MeFragment extends Fragment{
 
         view.findViewById(R.id.tv_feedback).setOnClickListener(listener);
         view.findViewById(R.id.tv_logout).setOnClickListener(listener);
+        view.findViewById(R.id.tv_about).setOnClickListener(listener);
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -78,6 +79,7 @@ public class MeFragment extends Fragment{
                     startActivity(new Intent(getActivity(), FeedbackActivity.class));
                     break;
                 case R.id.tv_about:
+                    startActivity(new Intent(getActivity(), AboutActivity.class));
                     break;
                 case R.id.tv_logout:
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

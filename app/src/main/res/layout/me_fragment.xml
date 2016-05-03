@@ -60,7 +60,7 @@
             android:paddingLeft="10dp"
             android:text="关于作者"
             android:textColor="@color/color_main"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <View
             android:layout_width="match_parent"
@@ -82,7 +82,7 @@
             android:paddingLeft="10dp"
             android:text="帮助与反馈"
             android:textColor="@color/color_main"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <View
             android:layout_width="match_parent"
@@ -104,7 +104,7 @@
             android:paddingLeft="10dp"
             android:text="设置"
             android:textColor="@color/color_main"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <View
             android:layout_width="match_parent"
@@ -126,7 +126,7 @@
             android:paddingLeft="10dp"
             android:text="退出账户"
             android:textColor="@color/color_main"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <View
             android:layout_width="match_parent"
