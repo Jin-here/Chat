@@ -5,12 +5,16 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.vgaw.rongyundemo.message.MatchEngine;
 import com.vgaw.rongyundemo.message.MatchMessage;
 import com.vgaw.rongyundemo.message.SysMsgTem;
+import com.vgaw.rongyundemo.message.SystemEngine;
 import com.vgaw.rongyundemo.message.SystemMessage;
 import com.vgaw.rongyundemo.util.DataFactory;
 
 import io.rong.imkit.RongIM;
+import io.rong.imlib.RongIMClient;
+import io.rong.notification.PushNotificationMessage;
 
 /**
  * Created by caojin on 15-10-21.
@@ -26,6 +30,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Preference.getInstance().init(getApplicationContext());
         DataFactory.getInstance().initial(getApplicationContext());
         /**
          * OnCreate 会被多个进程重入，这段保护代码，确保只有您需要使用 RongIM 的进程和 Push 进程执行了 init。
@@ -43,9 +48,20 @@ public class App extends Application {
             RongIM.registerMessageType(SystemMessage.class);
             // 注册自定义消息显示模板
             //RongIM.registerMessageTemplate(new SysMsgTem());
+            // 事件监听
+            MatchEngine.getInstance().initial(getApplicationContext());
+            SystemEngine.getInstance().initial(getApplicationContext());
+            RongIM.setOnReceivePushMessageListener(pushListener);
         }
 
     }
+
+    private RongIMClient.OnReceivePushMessageListener pushListener = new RongIMClient.OnReceivePushMessageListener() {
+        @Override
+        public boolean onReceivePushMessage(PushNotificationMessage pushNotificationMessage) {
+            return false;
+        }
+    };
 
     /**
      * 获得当前进程的名字

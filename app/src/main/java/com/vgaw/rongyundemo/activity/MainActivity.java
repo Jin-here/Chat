@@ -1,5 +1,8 @@
 package com.vgaw.rongyundemo.activity;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
 import android.view.View;
@@ -15,6 +18,10 @@ import com.vgaw.rongyundemo.fragment.FriendFragment;
 import com.vgaw.rongyundemo.fragment.MapShowFragment;
 import com.vgaw.rongyundemo.fragment.MeFragment;
 import com.vgaw.rongyundemo.util.DataFactory;
+import com.vgaw.rongyundemo.view.MyToast;
+
+import io.rong.imkit.RongIM;
+import io.rong.imlib.RongIMClient;
 
 /**
  * Created by caojin on 15-10-21.
@@ -55,6 +62,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                     if (mTabHost.getCurrentTab() == i){
                         iv_icon.setImageResource(iconOrangeList[i]);
                         tv_icon.setTextColor(getResources().getColor(R.color.color_main));
+                        iconAnim(view);
                     }else {
                         iv_icon.setImageResource(iconGrayList[i]);
                         tv_icon.setTextColor(getResources().getColor(R.color.gray));
@@ -62,6 +70,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 }
             }
         });
+    }
+
+    private void iconAnim(View icon) {
+        Animator iconAnim = ObjectAnimator.ofPropertyValuesHolder(
+                icon,
+                PropertyValuesHolder.ofFloat("scaleX", 1f, 0.5f, 1f),
+                PropertyValuesHolder.ofFloat("scaleY", 1f, 0.5f, 1f));
+        iconAnim.start();
     }
 
     /**
@@ -147,6 +163,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     protected void onDestroy() {
         super.onDestroy();
         stopAMap();
+        // 断开融云连接
+        RongIMClient.getInstance().disconnect();
     }
 
     private void stopAMap() {
@@ -163,5 +181,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         //在停止使用附近派单功能时，需释放资源。
         //调用销毁功能，在应用的合适生命周期需要销毁附近功能
         NearbySearch.destroy();
+    }
+
+    private long currentTime = -1;
+    private static final int DELAY = 1000;
+
+    @Override
+    public void onBackPressed() {
+        long temp = System.currentTimeMillis();
+        if (temp - currentTime > DELAY){
+            currentTime = temp;
+            MyToast.makeText(MainActivity.this, "再次点击退出程序").show();
+        }else {
+            super.onBackPressed();
+        }
     }
 }

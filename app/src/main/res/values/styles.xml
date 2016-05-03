@@ -6,7 +6,6 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@android:color/background_dark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:screenOrientation">portrait</item>
     </style>
 
     <style name="loading_dialog" parent="android:style/Theme.Dialog">

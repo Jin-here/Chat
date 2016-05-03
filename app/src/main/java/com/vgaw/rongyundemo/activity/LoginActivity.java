@@ -1,8 +1,6 @@
 package com.vgaw.rongyundemo.activity;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,6 +11,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.vgaw.rongyundemo.Preference;
 import com.vgaw.rongyundemo.message.MatchEngine;
 import com.vgaw.rongyundemo.http.HttpCat;
 import com.vgaw.rongyundemo.message.SystemEngine;
@@ -38,6 +37,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private EditText et_username;
     private EditText et_password;
 
+    private String pwd = null;
+    private String username = null;
+    private long id = -1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,8 +63,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private void connect(String token) {
 
         if (getApplicationInfo().packageName.equals(App.getCurProcessName(getApplicationContext()))) {
-            MatchEngine.getInstance().initial(LoginActivity.this);
-            SystemEngine.getInstance().initial(getApplicationContext());
             /**
              * IMKit SDK调用第二步,建立与服务器的连接
              */
@@ -87,6 +87,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
                     Loading.getInstance(LoginActivity.this).dismiss();
                     Log.d("LoginActivity", "--onSuccess" + userid);
+                    DataFactory.getInstance().setId(id);
+                    DataFactory.getInstance().setUsername(username);
+                    DataFactory.getInstance().setPwd(pwd);
+                    Preference.getInstance().setUsername(username);
+                    Preference.getInstance().setPwd(pwd);
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     finish();
                 }
@@ -137,8 +142,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             dialog.show();
             return;
         }
-        final String username = et_username.getText().toString();
-        final String password = et_password.getText().toString();
+        username = et_username.getText().toString();
+        pwd = et_password.getText().toString();
 
         // shake between left and right to warn the user.
         final Animation shakeAnimation = AnimationUtils.loadAnimation(getBaseContext(), R.anim.shake);
@@ -151,7 +156,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         }
 
         // if user do not input anything.
-        if ("".equals(password)) {
+        if ("".equals(pwd)) {
             MyToast.makeText(LoginActivity.this, "密码不能为空").show();
             et_password.startAnimation(shakeAnimation);
             return;
@@ -168,14 +173,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     @Override
                     public void onSuccess(FlyCatProto.FlyCat flyCat) {
                         if (flyCat.getFlag() == 1){
-                            HttpCat.fly(FlyCatProto.FlyCat.newBuilder().setFlag(2).addStringV(username).addStringV(password).build(), new HttpCat.AbstractResponseListener(){
+                            HttpCat.fly(FlyCatProto.FlyCat.newBuilder().setFlag(2).addStringV(username).addStringV(pwd).build(), new HttpCat.AbstractResponseListener(){
                                 @Override
                                 public void onSuccess(FlyCatProto.FlyCat flyCat) {
                                     if (flyCat.getFlag() == 1){
+                                        id = flyCat.getLongV(0);
                                         connect(flyCat.getStringV(0));
-                                        DataFactory.getInstance().setId(flyCat.getLongV(0));
-                                        DataFactory.getInstance().setUsername(username);
-                                        DataFactory.getInstance().setPwd(password);
                                     }else {
                                         // 密码错误
                                         et_password.startAnimation(shakeAnimation);
@@ -191,6 +194,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             MyToast.makeText(LoginActivity.this, "该用户不存在，请注册喔").show();
                             Loading.getInstance(LoginActivity.this).dismiss();
                         }
+                    }
+
+                    @Override
+                    public void onException(FlyCatProto.FlyCat flyCat) {
+                        super.onException(flyCat);
+                        MyToast.makeText(LoginActivity.this, "请求出现故障，请稍后再试").show();
+                        Loading.getInstance(LoginActivity.this).dismiss();
                     }
                 });
                 break;
@@ -215,7 +225,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                     if (s == null){
                                         MyToast.makeText(LoginActivity.this, "哎呀，注册失败了，请稍后再试一次").show();
                                     }else {
-                                        HttpCat.fly(FlyCatProto.FlyCat.newBuilder().setFlag(1).addStringV(s).addStringV(username).addStringV(password).build(), new HttpCat.AbstractResponseListener(){
+                                        HttpCat.fly(FlyCatProto.FlyCat.newBuilder().setFlag(1).addStringV(s).addStringV(username).addStringV(pwd).build(), new HttpCat.AbstractResponseListener(){
                                             @Override
                                             public void onSuccess(FlyCatProto.FlyCat flyCat) {
                                                 if (flyCat.getFlag() == 1){
@@ -236,6 +246,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             MyToast.makeText(LoginActivity.this, "该用户已存在").show();
                             Loading.getInstance(LoginActivity.this).dismiss();
                         }
+                    }
+
+                    @Override
+                    public void onException(FlyCatProto.FlyCat flyCat) {
+                        super.onException(flyCat);
+                        MyToast.makeText(LoginActivity.this, "请求出现故障，请稍后再试").show();
+                        Loading.getInstance(LoginActivity.this).dismiss();
                     }
                 });
                 break;

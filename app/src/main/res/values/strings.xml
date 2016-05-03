@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RongYunDemo</string>
+    <string name="app_name">Chat</string>
 
     <string name="username_blank">用户名不能为空</string>
     <string name="password_blank">密码不能为空</string>

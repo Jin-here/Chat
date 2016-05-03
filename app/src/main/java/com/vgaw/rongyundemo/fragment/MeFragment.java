@@ -1,5 +1,8 @@
 package com.vgaw.rongyundemo.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,7 +12,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.vgaw.rongyundemo.R;
+import com.vgaw.rongyundemo.activity.AboutActivity;
+import com.vgaw.rongyundemo.activity.FeedbackActivity;
+import com.vgaw.rongyundemo.activity.LoginActivity;
+import com.vgaw.rongyundemo.activity.MainActivity;
 import com.vgaw.rongyundemo.util.DataFactory;
+
+import io.rong.imlib.RongIMClient;
 
 /**
  * Created by caojin on 2016/2/20.
@@ -52,6 +61,8 @@ public class MeFragment extends Fragment{
             view.findViewById(R.id.layout_me).setVisibility(data.getBoolean("isMe") ? View.VISIBLE : View.GONE);
         }
 
+        view.findViewById(R.id.tv_feedback).setOnClickListener(listener);
+        view.findViewById(R.id.tv_logout).setOnClickListener(listener);
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -64,8 +75,33 @@ public class MeFragment extends Fragment{
                 case R.id.tv_set:
                     break;
                 case R.id.tv_feedback:
+                    startActivity(new Intent(getActivity(), FeedbackActivity.class));
                     break;
                 case R.id.tv_about:
+                    break;
+                case R.id.tv_logout:
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("确认退出？");
+                    builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // 断开融云连接
+                            RongIMClient.getInstance().disconnect();
+                            // 清空缓存
+                            DataFactory.getInstance().setId(-1);
+                            DataFactory.getInstance().setUsername(null);
+                            DataFactory.getInstance().setPwd(null);
+                            startActivity(new Intent(getActivity(), LoginActivity.class));
+                            getActivity().finish();
+                        }
+                    });
+                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.create().show();
                     break;
             }
         }

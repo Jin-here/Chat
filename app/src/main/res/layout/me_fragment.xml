@@ -41,7 +41,7 @@
         android:layout_weight="1"
         android:orientation="vertical"
         android:visibility="visible"
-        android:layout_marginTop="20dp">
+        android:paddingTop="20dp">
 
         <View
             android:layout_width="match_parent"
@@ -50,15 +50,15 @@
             android:layout_marginBottom="10dp"/>
 
         <TextView
-            android:id="@+id/tv_set"
+            android:id="@+id/tv_about"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/set"
+            android:drawableLeft="@drawable/about"
             android:drawableRight="@drawable/menu_next"
             android:drawablePadding="10dp"
             android:paddingRight="10dp"
             android:paddingLeft="10dp"
-            android:text="设置"
+            android:text="关于作者"
             android:textColor="@color/color_main"
             android:textSize="20sp" />
 
@@ -94,15 +94,37 @@
             android:layout_marginRight="@dimen/content_padding"/>
 
         <TextView
-            android:id="@+id/tv_about"
+            android:id="@+id/tv_set"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/about"
+            android:drawableLeft="@drawable/set"
             android:drawableRight="@drawable/menu_next"
             android:drawablePadding="10dp"
             android:paddingRight="10dp"
             android:paddingLeft="10dp"
-            android:text="关于作者"
+            android:text="设置"
+            android:textColor="@color/color_main"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/blue_title"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="@dimen/content_padding"
+            android:layout_marginRight="@dimen/content_padding"/>
+
+        <TextView
+            android:id="@+id/tv_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/logout"
+            android:drawableRight="@drawable/menu_next"
+            android:drawablePadding="10dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:text="退出账户"
             android:textColor="@color/color_main"
             android:textSize="20sp" />
 
@@ -112,11 +134,6 @@
             android:background="@color/blue_title"
             android:layout_marginTop="10dp"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/light_gray"/>
     </LinearLayout>
 
 </LinearLayout>

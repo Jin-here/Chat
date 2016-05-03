@@ -10,7 +10,7 @@ import com.vgaw.rongyundemo.fragment.MeFragment;
 /**
  * Created by caojin on 2016/2/29.
  */
-public class MeActivity extends FragmentActivity {
+public class MeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -1,15 +1,20 @@
 package com.vgaw.rongyundemo.activity;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -24,6 +29,8 @@ import com.vgaw.rongyundemo.util.DataFactory;
 import com.vgaw.rongyundemo.view.MyToast;
 
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.rong.imkit.RongIM;
 import io.rong.imkit.fragment.ConversationFragment;
@@ -81,9 +88,9 @@ public class ConversationActivity extends BaseActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            new AlertDialog.Builder(ConversationActivity.this)
+                            final AlertDialog alertDialog = new AlertDialog.Builder(ConversationActivity.this)
                                     .setMessage("对方已离开聊天室，将在3秒后退出")
-                                    .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                    .setPositiveButton("确认(3s)", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             MatchEngine.getInstance().initialStatus();
@@ -91,14 +98,31 @@ public class ConversationActivity extends BaseActivity {
                                             finish();
                                         }
                                     })
-                                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                    .create();
+                            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                                @Override
+                                public void onShow(final DialogInterface dialog) {
+                                    final Button btn_positive = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                                    ValueAnimator animator = ValueAnimator.ofInt(3, 0);
+                                    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                                         @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            MatchEngine.getInstance().initialStatus();
-                                            dialog.dismiss();
-                                            finish();
+                                        public void onAnimationUpdate(ValueAnimator animation) {
+                                            long current = 3 - (animation.getCurrentPlayTime() / 1000);
+                                            if (current == -1){
+                                                MatchEngine.getInstance().initialStatus();
+                                                dialog.dismiss();
+                                                finish();
+                                            }else {
+                                                btn_positive.setText("确认(" + String.valueOf(current) + "s)");
+                                            }
                                         }
-                                    }).create().show();
+                                    });
+                                    animator.setDuration(4000);
+                                    animator.start();
+                                }
+                            });
+                            alertDialog.setCancelable(false);
+                            alertDialog.show();
                         }
                     });
                 }

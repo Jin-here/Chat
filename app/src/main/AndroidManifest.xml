@@ -34,13 +34,14 @@
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/default_head_s"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
 
-        <activity android:name=".activity.ConversationActivity">
+        <activity android:name=".activity.ConversationActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -77,11 +78,22 @@
 
 
 
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.MainActivity"
+            android:screenOrientation="portrait">
 
         </activity>
 
-        <activity android:name=".activity.LoginActivity">
+        <activity android:name=".activity.LoginActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".activity.MeActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.AboutActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.FeedbackActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.PrepareActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -89,9 +101,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.MeActivity"/>
-
-        <activity android:name=".activity.ShowLocActivity"/>
+        <activity android:name=".activity.ShowLocActivity"
+            android:screenOrientation="portrait"/>
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="80bc35618f4866b583235439c0efb23b"/>
