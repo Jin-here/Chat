@@ -73,6 +73,9 @@ public class PrepareActivity extends Activity {
                                 }
                             }
                         });
+                    }else {
+                        // 用户不存在
+                        goToNext();
                     }
                 }
 
