@@ -38,13 +38,13 @@ public class PrepareActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TextView tv = new TextView(PrepareActivity.this);
+        /*TextView tv = new TextView(PrepareActivity.this);
         tv.setText("CHAT");
         tv.setTextSize(50);
         tv.setGravity(Gravity.CENTER);
         tv.setTextColor(Color.WHITE);
-        tv.setBackgroundColor(getResources().getColor(R.color.color_main));
-        setContentView(tv);
+        tv.setBackgroundColor(getResources().getColor(R.color.color_main));*/
+        setContentView(R.layout.activity_prepare);
         // 沉浸式
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
