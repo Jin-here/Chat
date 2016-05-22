@@ -13,4 +13,4 @@
         android:orientation="vertical" >
     </LinearLayout>
 
-</LinearLayout> <!-- From: file:/home/caojin/AndroidStudioProjects/RongYunDemo/IMKit/src/main/res/layout/rc_item_public_service_input_menus.xml --><!-- From: file:/home/caojin/AndroidStudioProjects/RongYunDemo/IMKit/build/intermediates/bundles/debug/res/layout/rc_item_public_service_input_menus.xml -->
+</LinearLayout> 

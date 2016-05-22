@@ -128,4 +128,4 @@
         android:clickable="true"
         android:visibility="gone"/>
 
-</RelativeLayout><!-- From: file:/home/caojin/AndroidStudioProjects/RongYunDemo/IMKit/src/main/res/layout/rc_callside_layout.xml --><!-- From: file:/home/caojin/AndroidStudioProjects/RongYunDemo/IMKit/build/intermediates/bundles/debug/res/layout/rc_callside_layout.xml -->
+</RelativeLayout>

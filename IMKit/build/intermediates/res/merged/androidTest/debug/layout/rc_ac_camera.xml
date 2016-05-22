@@ -51,4 +51,4 @@
             android:layout_gravity="center|right" />
     </FrameLayout>
 
-</LinearLayout><!-- From: file:/home/caojin/AndroidStudioProjects/RongYunDemo/IMKit/src/main/res/layout/rc_ac_camera.xml --><!-- From: file:/home/caojin/AndroidStudioProjects/RongYunDemo/IMKit/build/intermediates/bundles/debug/res/layout/rc_ac_camera.xml -->
+</LinearLayout>

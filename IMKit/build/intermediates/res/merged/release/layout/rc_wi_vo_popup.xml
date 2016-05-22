@@ -42,4 +42,4 @@
             android:textColor="@android:color/white"
             android:textSize="14sp" />
     </LinearLayout>
-</FrameLayout><!-- From: file:/home/caojin/AndroidStudioProjects/RongYunDemo/IMKit/src/main/res/layout/rc_wi_vo_popup.xml -->
+</FrameLayout>

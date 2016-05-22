@@ -5,7 +5,7 @@
     android:versionName="2.3.3 Stable" >
 
     <uses-sdk
-        android:minSdkVersion="19"
+        android:minSdkVersion="14"
         android:targetSdkVersion="23" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -62,7 +62,8 @@
 
         <service
             android:name="io.rong.push.PushService"
-            android:process="io.rong.push" > <!-- Waring: The name of the push process can't be changed!!! -->
+            android:process="io.rong.push" >
+ <!-- Waring: The name of the push process can't be changed!!! -->
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 
@@ -71,7 +72,8 @@
         </service>
         <service
             android:name="io.rong.push.CommandService"
-            android:process="io.rong.push" > <!-- Waring: The name of the push process can't be changed!!! -->
+            android:process="io.rong.push" >
+ <!-- Waring: The name of the push process can't be changed!!! -->
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 
@@ -81,7 +83,8 @@
 
         <receiver
             android:name="io.rong.push.PushReceiver"
-            android:process="io.rong.push" > <!-- Waring: The name of the push process can't be changed!!! -->
+            android:process="io.rong.push" >
+ <!-- Waring: The name of the push process can't be changed!!! -->
             <intent-filter>
                 <action android:name="io.rong.imlib.action.push.heartbeat" />
             </intent-filter>

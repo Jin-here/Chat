@@ -40,4 +40,4 @@
         android:layout_marginLeft="10dp"
         android:src="@drawable/rc_voice_unread"/>
 
-</LinearLayout><!-- From: file:/home/caojin/AndroidStudioProjects/RongYunDemo/IMKit/src/main/res/layout/rc_item_voice_message.xml --><!-- From: file:/home/caojin/AndroidStudioProjects/RongYunDemo/IMKit/build/intermediates/bundles/debug/res/layout/rc_item_voice_message.xml -->
+</LinearLayout>

@@ -4,4 +4,4 @@
   <item android:maxLevel="1" android:drawable="@drawable/rc_sound_off_disable" />  
   <item android:maxLevel="2" android:drawable="@drawable/rc_sound_off" />  
   <item android:maxLevel="3" android:drawable="@drawable/rc_sound_off_down" />  
-</level-list>  <!-- From: file:/home/caojin/AndroidStudioProjects/RongYunDemo/IMKit/src/main/res/drawable/rc_btn_sound_off_selector.xml --><!-- From: file:/home/caojin/AndroidStudioProjects/RongYunDemo/IMKit/build/intermediates/bundles/debug/res/drawable/rc_btn_sound_off_selector.xml -->
+</level-list>  

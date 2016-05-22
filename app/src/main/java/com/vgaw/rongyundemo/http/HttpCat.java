@@ -17,7 +17,7 @@ import java.net.URL;
  * Created by Administrator on 2015/10/25.
  */
 public class HttpCat {
-    private static String uri = "http://192.168.1.102:7778/";
+    private static String uri = "http://114.55.62.213:7778/";
 
     public static void setUri(String uri1){
         uri = "http://" + uri1 + ":7778/";

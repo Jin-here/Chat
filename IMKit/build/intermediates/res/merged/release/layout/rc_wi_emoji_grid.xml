@@ -7,4 +7,4 @@
     android:padding="10dp"
     android:stretchMode="columnWidth">
 
-</GridView><!-- From: file:/home/caojin/AndroidStudioProjects/RongYunDemo/IMKit/src/main/res/layout/rc_wi_emoji_grid.xml -->
+</GridView>

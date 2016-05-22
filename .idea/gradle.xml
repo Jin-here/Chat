@@ -14,6 +14,14 @@
             <option value="$PROJECT_DIR$/server-sdk-java-master" />
           </set>
         </option>
+        <option name="myModules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/IMKit" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/server-sdk-java-master" />
+          </set>
+        </option>
       </GradleProjectSettings>
     </option>
   </component>

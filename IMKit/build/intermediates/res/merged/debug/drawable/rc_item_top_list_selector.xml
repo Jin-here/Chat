@@ -9,4 +9,4 @@
     <!-- Pressed -->
     <item android:drawable="@color/rc_conversation_top_bg" android:state_pressed="true"/>
 
-</selector><!-- From: file:/home/caojin/AndroidStudioProjects/RongYunDemo/IMKit/src/main/res/drawable/rc_item_top_list_selector.xml -->
+</selector>

@@ -36,4 +36,4 @@
             android:layout_gravity="center_vertical" />
     </RelativeLayout>
 
-</LinearLayout><!-- From: file:/home/caojin/AndroidStudioProjects/RongYunDemo/IMKit/src/main/res/layout/rc_item_public_service_message.xml -->
+</LinearLayout>

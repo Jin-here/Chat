@@ -57,4 +57,4 @@
         android:src="@drawable/rc_ic_message_block"
         android:visibility="gone" />
 
-</RelativeLayout><!-- From: file:/home/caojin/AndroidStudioProjects/RongYunDemo/IMKit/src/main/res/layout/rc_item_base_conversation.xml --><!-- From: file:/home/caojin/AndroidStudioProjects/RongYunDemo/IMKit/build/intermediates/bundles/debug/res/layout/rc_item_base_conversation.xml -->
+</RelativeLayout>

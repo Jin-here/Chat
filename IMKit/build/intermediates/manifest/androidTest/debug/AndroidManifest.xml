@@ -3,7 +3,7 @@
     package="io.rong.imkit.test" >
 
     <uses-sdk
-        android:minSdkVersion="19"
+        android:minSdkVersion="14"
         android:targetSdkVersion="23" />
 
     <instrumentation
@@ -17,8 +17,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 获取机型信息权限 -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 录音 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+ <!-- 获取机型信息权限 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+ <!-- 录音 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -64,7 +66,9 @@
 
         <service
             android:name="io.rong.push.PushService"
-            android:process="io.rong.push" > <!-- Waring: The name of the push process can't be changed!!! -->
+            android:process="io.rong.push" >
+
+            <!-- Waring: The name of the push process can't be changed!!! -->
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 
@@ -73,7 +77,9 @@
         </service>
         <service
             android:name="io.rong.push.CommandService"
-            android:process="io.rong.push" > <!-- Waring: The name of the push process can't be changed!!! -->
+            android:process="io.rong.push" >
+
+            <!-- Waring: The name of the push process can't be changed!!! -->
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 
@@ -83,7 +89,9 @@
 
         <receiver
             android:name="io.rong.push.PushReceiver"
-            android:process="io.rong.push" > <!-- Waring: The name of the push process can't be changed!!! -->
+            android:process="io.rong.push" >
+
+            <!-- Waring: The name of the push process can't be changed!!! -->
             <intent-filter>
                 <action android:name="io.rong.imlib.action.push.heartbeat" />
             </intent-filter>

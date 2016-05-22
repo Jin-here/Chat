@@ -8,4 +8,3 @@
     android:autoLink="all"
     android:gravity="center_vertical|left"
     android:maxWidth="236dp" />
-<!-- From: file:/home/caojin/AndroidStudioProjects/RongYunDemo/IMKit/src/main/res/layout/rc_item_text_message.xml -->

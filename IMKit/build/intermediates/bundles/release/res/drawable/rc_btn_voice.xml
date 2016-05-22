@@ -3,4 +3,4 @@
 
     <item android:drawable="@drawable/rc_btn_voice_hover" android:state_pressed="true"></item>
     <item android:drawable="@drawable/rc_btn_voice_normal"></item>
-</selector><!-- From: file:/home/caojin/AndroidStudioProjects/RongYunDemo/IMKit/src/main/res/drawable/rc_btn_voice.xml -->
+</selector>
