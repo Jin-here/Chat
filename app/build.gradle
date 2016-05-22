@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "com.vgaw.rongyundemo"
@@ -17,15 +17,25 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    signingConfigs {
+        debug {
+            storeFile file("D:\\Android\\AndroidStudioProjects\\workspace\\keystore7.keystore")
+            storePassword "caojin"
+            keyAlias "7gaw"
+            keyPassword "caojin"
+        }
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.1.0'
+    compile 'com.android.support:appcompat-v7:23.3.0'
     compile project(':IMKit')
     compile project(':server-sdk-java-master')
     compile files('libs/AMap_3DMap_V3.2.0.1_20160122.jar')
     compile files('libs/AMap_Location_v2.3.0_20160112.jar')
     compile files('libs/AMap_Search_V2.8.0_20160105.jar')
+    compile files('libs/GifView.jar')
+    compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile 'com.android.support:design:23.3.0'
 }
